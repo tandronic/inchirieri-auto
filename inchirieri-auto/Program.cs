@@ -10,6 +10,10 @@ namespace inchirieri_auto
     {
         static void Main(string[] args)
         {
+            // Test clasa Masini
+            var masina = new Masini("Audi", "A4", "WAUZZZF49HA036784", 2017, 1986, false);
+            Console.WriteLine(masina.Info());
+            Console.ReadKey();
         }
     }
 }
