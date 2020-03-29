@@ -11,20 +11,20 @@ namespace inchirieri_auto
         static void Main(string[] args)
         {
             // Test clasa Masini
-            var masina = new Masini("Audi", "A4", "WAUZZZF49HA036784", 2017, 1986, false);
-            Console.WriteLine(masina.Info());
+            var masina = new Masini("Audi", "A4", "SV89ABC", 2017, 1986, false);
+            Console.WriteLine(masina.ConversieLaSir());
             Console.ReadKey();
 
             // Test clasa Angajati
             var angajat = new Angajati("Popescu", "Ionel", "Adresa test", "0751910763", 30,
                 "122334567891", "Marketing", 10, 9, 2019);
-            Console.WriteLine(angajat.Info());
+            Console.WriteLine(angajat.ConversieLaSir());
             Console.ReadKey();
 
             // Test clasa Clienti
             var client = new Clienti("Popovici", "Georgel", "Adresa test", "Telefon", 23, "1232343247324723",
-                "WAUZZZF49HA036784", 23, 12, 2019, 60);
-            Console.WriteLine(client.Info());
+                "SV89ABC", 23, 12, 2019, 60);
+            Console.WriteLine(client.ConversieLaSir());
             Console.ReadKey();
         }
     }

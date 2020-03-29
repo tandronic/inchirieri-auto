@@ -8,42 +8,35 @@ namespace inchirieri_auto
 {
     class Masini
     {
-        string brend, model, vin;
-        int an_fabricatie, capacitate_motor;
-        bool inchiriata;
+        public string Brend { get; set; }
+        public string Model { get; set; }
+        public string NumarInmatriculare { get; set; }
+        public int AnFabricatie { get; set; }
+        public int CapacitateMotor { get; set; }
+        public bool Inchiriata {get; set;}
 
         public Masini()
         {
-            brend = model = vin = string.Empty;
-            an_fabricatie = capacitate_motor = 0;
-            inchiriata = false;
+            Brend = Model = NumarInmatriculare = string.Empty;
+            AnFabricatie = CapacitateMotor = 0;
+            Inchiriata = false;
         }
 
-        public Masini(string _brend, string _model, string _vin, 
+        public Masini(string _brend, string _model, string _numar, 
             int _an_fabricatie, int _capacitate_motor, bool _inchiriata)
         {
-            brend = _brend;
-            model = _model;
-            vin = _vin;
-            an_fabricatie = _an_fabricatie;
-            capacitate_motor = _capacitate_motor;
-            inchiriata = _inchiriata;
+            Brend = _brend;
+            Model = _model;
+            NumarInmatriculare = _numar;
+            AnFabricatie = _an_fabricatie;
+            CapacitateMotor = _capacitate_motor;
+            Inchiriata = _inchiriata;
         }
 
-        public int get_an_fabricatie()
-        {
-            return an_fabricatie;
-        }
-
-        public bool get_inchiriata()
-        {
-            return inchiriata;
-        }
-
-        public string Info()
+        public string ConversieLaSir()
         {
             return string.Format("{0}, {1}, {2}, {3}, {4}", 
-                brend, model, vin, an_fabricatie, capacitate_motor);
+                Brend, Model, NumarInmatriculare, AnFabricatie, CapacitateMotor);
         }
     }
 }
