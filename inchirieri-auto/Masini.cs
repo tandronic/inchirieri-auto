@@ -38,5 +38,12 @@ namespace inchirieri_auto
             return string.Format("{0}, {1}, {2}, {3}, {4}", 
                 Brend, Model, NumarInmatriculare, AnFabricatie, CapacitateMotor);
         }
+
+        public bool Compare(Masini masina)
+        {
+            if (NumarInmatriculare == masina.NumarInmatriculare)
+                return true;
+            return false;
+        }
     }
 }

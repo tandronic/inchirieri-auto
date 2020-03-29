@@ -20,6 +20,13 @@ namespace inchirieri_auto
             return string.Format("{0}, {1}, {2}, {3}, {4}, {5}",
                 Nume, Prenume, Adresa, NumarTelefon, Cnp, Varsta);
         }
+
+        public bool Compare(Persoane persoana)
+        {
+            if (Cnp == persoana.Cnp)
+                return true;
+            return false;
+        }
     }
 
     class Angajati: Persoane
@@ -84,5 +91,6 @@ namespace inchirieri_auto
             return string.Format("{0}, {1}, {2}, {3}, {4}",
                 Data(), NrMasinaInc, ZiuaInc, LunaInc, AnulInc, PerioadaInc);
         }
+
     }
 }
