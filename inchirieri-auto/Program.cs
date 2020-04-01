@@ -88,6 +88,8 @@ namespace inchirieri_auto
                         Console.ReadKey();
                         break;
                     case "F":
+                        if (NrMasini == 0)
+                            Console.WriteLine("Nu sunt date");
                         for(int i=0; i < NrMasini; i++)
                             Console.WriteLine(MasiniFisier[i].ConversieLaSir());
                         Console.ReadKey();

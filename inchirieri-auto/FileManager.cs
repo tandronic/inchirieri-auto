@@ -24,7 +24,7 @@ namespace inchirieri_auto
                 //al doilea parametru setat la 'true' al constructorului StreamWriter indica modul 'append' de deschidere al fisierului
                 using (StreamWriter swFisierText = new StreamWriter(FileName, true))
                 {
-                    swFisierText.WriteLine(m.ConversieLaSir());
+                    swFisierText.WriteLine(m.ConversieLaSirFisier());
                 }
             }
             catch (IOException eIO)
@@ -50,8 +50,9 @@ namespace inchirieri_auto
 
                     while ((line = sr.ReadLine()) != null)
                     {
-                        if(line.Split(',').Length == NR_ELEMENTE)
-                            VectorMasini[nrMasini++] = new Masini(line);
+                        if (line == "")
+                            break;
+                        VectorMasini[nrMasini++] = new Masini(line);
                         if (nrMasini == PAS_ALOCARE)
                         {
                             Array.Resize(ref VectorMasini, nrMasini + PAS_ALOCARE);

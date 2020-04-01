@@ -49,15 +49,20 @@ namespace inchirieri_auto
             NumarInmatriculare = date[2];
             AnFabricatie = System.Convert.ToInt32(date[3]);
             CapacitateMotor = System.Convert.ToInt32(date[4]);
-            Culoare = (CuloareMasina)System.Convert.ToInt32(date[5]);
-            Combustibil = (CombustibilMasina)System.Convert.ToInt32(date[5]);
+            Culoare = (CuloareMasina)Enum.Parse(typeof(CuloareMasina), date[5]);
+            Combustibil = (CombustibilMasina)Enum.Parse(typeof(CombustibilMasina), date[6]);
             //Optiuni = _optiuni;
-            Inchiriata = System.Convert.ToBoolean(date[6]);
         }
 
         public string ConversieLaSir()
         {
-            return string.Format("{0}, {1}, {2}, {3}, {4}, {5}, {6}", 
+            return string.Format("{0}, {1}, {2}, {3}, {4}, {5}, {6}\n", 
+                Brend, Model, NumarInmatriculare, AnFabricatie, CapacitateMotor, Culoare, Combustibil);
+        }
+
+        public string ConversieLaSirFisier()
+        {
+            return string.Format("{0}, {1}, {2}, {3}, {4}, {5}, {6}",
                 Brend, Model, NumarInmatriculare, AnFabricatie, CapacitateMotor, Culoare, Combustibil);
         }
 
