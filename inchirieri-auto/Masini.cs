@@ -28,7 +28,7 @@ namespace inchirieri_auto
 
         public Masini(string _brend, string _model, string _numar, 
             int _an_fabricatie, int _capacitate_motor, CuloareMasina _culoare, 
-            CombustibilMasina _combustibil, OptiuniMasina[] _optiuni, bool _inchiriata)
+            CombustibilMasina _combustibil, bool _inchiriata)
         {
             Brend = _brend;
             Model = _model;
@@ -37,14 +37,28 @@ namespace inchirieri_auto
             CapacitateMotor = _capacitate_motor;
             Culoare = _culoare;
             Combustibil = _combustibil;
-            Optiuni = _optiuni;
+            //Optiuni = _optiuni;
             Inchiriata = _inchiriata;
+        }
+
+        public Masini(string linie)
+        {
+            string[] date = linie.Split(',');
+            Brend = date[0];
+            Model = date[1];
+            NumarInmatriculare = date[2];
+            AnFabricatie = System.Convert.ToInt32(date[3]);
+            CapacitateMotor = System.Convert.ToInt32(date[4]);
+            Culoare = (CuloareMasina)System.Convert.ToInt32(date[5]);
+            Combustibil = (CombustibilMasina)System.Convert.ToInt32(date[5]);
+            //Optiuni = _optiuni;
+            Inchiriata = System.Convert.ToBoolean(date[6]);
         }
 
         public string ConversieLaSir()
         {
-            return string.Format("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}", 
-                Brend, Model, NumarInmatriculare, AnFabricatie, CapacitateMotor, Culoare, Combustibil, Optiuni);
+            return string.Format("{0}, {1}, {2}, {3}, {4}, {5}, {6}", 
+                Brend, Model, NumarInmatriculare, AnFabricatie, CapacitateMotor, Culoare, Combustibil);
         }
 
         public bool Compare(Masini masina)

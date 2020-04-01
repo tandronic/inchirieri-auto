@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Enumerari.cs" />
+    <Compile Include="FileManager.cs" />
     <Compile Include="Masini.cs" />
     <Compile Include="Persoane.cs" />
     <Compile Include="Program.cs" />
