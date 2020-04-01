@@ -13,7 +13,11 @@ namespace inchirieri_auto
         public string NumarInmatriculare { get; set; }
         public int AnFabricatie { get; set; }
         public int CapacitateMotor { get; set; }
-        public bool Inchiriata {get; set;}
+        public bool Inchiriata { get; set; }
+
+        public CuloareMasina Culoare { get; set; }
+        public CombustibilMasina Combustibil { get; set; }
+        public OptiuniMasina[] Optiuni;
 
         public Masini()
         {
@@ -23,20 +27,24 @@ namespace inchirieri_auto
         }
 
         public Masini(string _brend, string _model, string _numar, 
-            int _an_fabricatie, int _capacitate_motor, bool _inchiriata)
+            int _an_fabricatie, int _capacitate_motor, CuloareMasina _culoare, 
+            CombustibilMasina _combustibil, OptiuniMasina[] _optiuni, bool _inchiriata)
         {
             Brend = _brend;
             Model = _model;
             NumarInmatriculare = _numar;
             AnFabricatie = _an_fabricatie;
             CapacitateMotor = _capacitate_motor;
+            Culoare = _culoare;
+            Combustibil = _combustibil;
+            Optiuni = _optiuni;
             Inchiriata = _inchiriata;
         }
 
         public string ConversieLaSir()
         {
-            return string.Format("{0}, {1}, {2}, {3}, {4}", 
-                Brend, Model, NumarInmatriculare, AnFabricatie, CapacitateMotor);
+            return string.Format("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}", 
+                Brend, Model, NumarInmatriculare, AnFabricatie, CapacitateMotor, Culoare, Combustibil, Optiuni);
         }
 
         public bool Compare(Masini masina)

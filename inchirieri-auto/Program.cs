@@ -11,9 +11,13 @@ namespace inchirieri_auto
         static void Main(string[] args)
         {
             // Test clasa Masini
-            var masina = new Masini("Audi", "A4", "SV89ABC", 2017, 1986, false);
+            var masina = new Masini("Audi", "A4", "SV89ABC", 2017, 1986,
+                (CuloareMasina)1, (CombustibilMasina)2, (OptiuniMasina)1,
+                (OptiuniMasina)2, (OptiuniMasina)3, (OptiuniMasina)4, false);
             Console.WriteLine(masina.ConversieLaSir());
-            var masina2 = new Masini("Audi", "A4", "SV89XTC", 2017, 1986, false);
+            var masina2 = new Masini("Audi", "A4", "SV89XTC", 2017, 1986, 
+                (CuloareMasina)1, (CombustibilMasina)2, [(OptiuniMasina)1, 
+                (OptiuniMasina)2, (OptiuniMasina)3, (OptiuniMasina)4], false);
             Console.WriteLine(masina2.ConversieLaSir());
             if (masina.Compare(masina2))
                 Console.WriteLine("Este aceiasi masina");
