@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Collections;
+using LibrarieModele;
+using NivelAccesDate;
+
 
 namespace inchirieri_auto
 {
@@ -20,13 +20,9 @@ namespace inchirieri_auto
             return meniu;
         }
 
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
-            string FisierMasini = "masini.txt";
-            FileManager adminMasini = new FileManager(FisierMasini);
-            int NrMasini;
-            Masini[] MasiniFisier = adminMasini.GetMasini(out NrMasini);
-
+            IStocareData adminMasini = StocareFactory.GetAdministratorStocare();
             do
             {
                 Console.Clear();
@@ -36,16 +32,8 @@ namespace inchirieri_auto
                 switch(optiune)
                 {
                     case "M":
-                        string mesaj;
-                        mesaj = "Brend, Model, Nr. Inmatriculare, An, Capacitate Motor, Culoare:\n1.Alb\n";
-                        mesaj += "2.Negru\n3.Albastru\n4.Verde\n5.Portocaliu\n6.Galben,";
-                        mesaj += "Motorizare:\n1.Benzina\n2.Diesel\n3.Electrica, Inghiriata: 0 Nu 1 Da";
-                        Console.WriteLine(mesaj);
-                        // var masina = new Masini(Console.ReadLine());
-                        var masina = new Masini("Audi", "A4", "SV89ABC", 2017, 1986, (CuloareMasina)1, (CombustibilMasina)2, false);
-                        MasiniFisier[NrMasini] = masina;
-                        NrMasini++;
-                        adminMasini.AddMasini(masina);
+                        var masina = CitireMasinaTastatura();
+                        adminMasini.AddMasina(masina);
                         Console.ReadLine();
                         break;
                     case "A":
@@ -75,30 +63,55 @@ namespace inchirieri_auto
                         Console.ReadKey();
                         break;
                     case "T":
-                       var masina1 = new Masini("Audi", "A4", "SV89ABC", 2017, 1986, (CuloareMasina)1, 
+                       var masina1 = new Masini(1, "Audi", "A4", "SV89ABC", 2017, 1986, (CuloareMasina)1, 
                            (CombustibilMasina)2, false);
                         Console.WriteLine(masina1);
-                        var masina2 = new Masini("Audi", "A4", "SV89XTC", 2017, 1986,
+                        var masina2 = new Masini(2, "Audi", "A4", "SV89XTC", 2017, 1986,
                             (CuloareMasina)3, (CombustibilMasina)3, false);
                         Console.WriteLine(masina2.ConversieLaSir());
                         if (masina1.Compare(masina2))
                             Console.WriteLine("Este aceiasi masina");
                         else
                             Console.WriteLine("Cele 2 masini sunt diferite");
+                        Console.WriteLine("Introdu numar inmatriculare cautat: ");
+                        string Nrinm = Console.ReadLine();
+                        //Console.WriteLine(GetIdMasina(MasiniFisier, NrMasini, Nrinm).Model);
                         Console.ReadKey();
                         break;
                     case "F":
-                        if (NrMasini == 0)
-                            Console.WriteLine("Nu sunt date");
-                        for(int i=0; i < NrMasini; i++)
-                            Console.WriteLine(MasiniFisier[i].ConversieLaSir());
+                        ArrayList masinii = adminMasini.GetMasini();
+                        foreach(Masini m in masinii)
+                            Console.WriteLine(m.ConversieLaSir());
                         Console.ReadKey();
                         break;
                     case "X":
+                        Console.WriteLine(Utils.CNPValidate("1234567891234"));
+                        Console.ReadKey();
                         System.Environment.Exit(1);
                         break;
                 }
             } while (true);
+        }
+        public static Masini GetIdMasina(Masini[] masini, int NrMasini, string NrInm)
+        {
+            for (int i = 0; i < NrMasini; i++)
+            {
+                if (masini[i].NumarInmatriculare == NrInm)
+                    return masini[i];
+            }
+            return null;
+        }
+
+        public static Masini CitireMasinaTastatura()
+        {
+            string mesaj;
+            mesaj = "Brend, Model, Nr. Inmatriculare, An, Capacitate Motor, Culoare:\n1.Alb\n";
+            mesaj += "2.Negru\n3.Albastru\n4.Verde\n5.Portocaliu\n6.Galben,";
+            mesaj += "Motorizare:\n1.Benzina\n2.Diesel\n3.Electrica, Inghiriata: 0 Nu 1 Da";
+            Console.WriteLine(mesaj);
+            //var masina = new Masini(Console.ReadLine());
+            var masina = new Masini(1, "Audi", "A4", "SV89ABC", 2017, 1986, (CuloareMasina)1, (CombustibilMasina)2, false);
+            return masina;
         }
     }
 }
