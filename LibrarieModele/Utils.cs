@@ -28,12 +28,28 @@ namespace LibrarieModele
             return CULOARE_DEFAULT;
         }
 
+        public static bool CuloareValidate(string value)
+        {
+            CuloareMasina culoare;
+            if (Enum.TryParse(value, true, out culoare))
+                return true;
+            return false;
+        }
+
         public static CombustibilMasina CombustibilConvert(string value)
         {
             CombustibilMasina combustibil;
             if (Enum.TryParse(value, true, out combustibil))
                 return combustibil;
             return COMBUSTIBIL_DEFAULT;
+        }
+
+        public static bool CombustibilValidate(string value)
+        {
+            CombustibilMasina combustibil;
+            if (Enum.TryParse(value, true, out combustibil))
+                return true;
+            return false;
         }
 
         public static bool CNPValidate(string value)
@@ -48,6 +64,27 @@ namespace LibrarieModele
         {
             Regex regex = new Regex("^[0-9]+$");
             if (value.Length == 11 && regex.IsMatch(value))
+                return true;
+            return false;
+        }
+
+        public static bool InchiriataToBoolConvert(string value)
+        {
+            if (value.Equals("DA"))
+                return true;
+            return false;
+        }
+
+        public static string BoolToInchiriataConvert(bool value)
+        {
+            if (value)
+                return "DA";
+            return "NU";
+        }
+
+        public static bool InchiriataValidate(string value)
+        {
+            if (value.ToUpper().Equals("DA") || value.ToUpper().Equals("NU"))
                 return true;
             return false;
         }
