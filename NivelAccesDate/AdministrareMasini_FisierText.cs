@@ -81,7 +81,7 @@ namespace NivelAccesDate
                     while ((line = sr.ReadLine()) != null)
                     {
                         Masini m = new Masini(line);
-                        if (m.NumarInmatriculare.Equals(NumarInmatriculare))
+                        if (m.NumarInmatriculare == NumarInmatriculare)
                             return m;
                     }
                 }

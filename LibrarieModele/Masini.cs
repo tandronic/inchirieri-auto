@@ -14,9 +14,22 @@ namespace LibrarieModele
         public string NumarInmatriculare { get; set; }
         public int AnFabricatie { get; set; }
         public int CapacitateMotor { get; set; }
-        public bool Inchiriata { get; set; }
 
-        private int NR_ATRIBUTE = 8;
+        private bool _inchiriata;
+        public bool Inchiriata 
+        {
+            get
+            {
+                return this._inchiriata;
+            }
+            set
+            {
+                this._inchiriata = value;
+            }
+        }
+        
+
+        private int NR_ATRIBUTE = 9;
 
         public CuloareMasina Culoare { get; set; }
         public CombustibilMasina Combustibil { get; set; }
@@ -57,6 +70,7 @@ namespace LibrarieModele
                 CapacitateMotor = Utils.IntConvert(date[5]);
                 Culoare = Utils.CuloareConvert(date[6]);
                 Combustibil = Utils.CombustibilConvert(date[7]);
+                Inchiriata = Utils.InchiriataToBoolConvert(date[8]);
             }
             
         }
@@ -64,14 +78,16 @@ namespace LibrarieModele
 
         public string ConversieLaSir()
         {
-            return string.Format("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}\n",
-                IdMasina, Brend, Model, NumarInmatriculare, AnFabricatie, CapacitateMotor, Culoare, Combustibil);
+            return string.Format("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}\n",
+                IdMasina, Brend, Model, NumarInmatriculare, AnFabricatie, CapacitateMotor, 
+                Culoare, Combustibil, Utils.BoolToInchiriataConvert(Inchiriata));
         }
 
         public string ConversieLaSirFisier()
         {
-            return string.Format("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}",
-                IdMasina, Brend, Model, NumarInmatriculare, AnFabricatie, CapacitateMotor, Culoare, Combustibil);
+            return string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8}",
+                IdMasina, Brend, Model, NumarInmatriculare, AnFabricatie, 
+                CapacitateMotor, Culoare, Combustibil, Utils.BoolToInchiriataConvert(Inchiriata));
         }
 
         public bool Compare(Masini masina)
