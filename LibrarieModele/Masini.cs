@@ -16,7 +16,23 @@ namespace LibrarieModele
         public int CapacitateMotor { get; set; }
         public bool Inchiriata { get; set; }
 
-        private int NR_ATRIBUTE = 8;
+        private int _vechime;
+        private int AN_CURENT = 2020;
+
+        public int Vechime 
+        {
+            get
+            {
+                return _vechime;
+            }
+            set
+            {
+                _vechime = AN_CURENT - AnFabricatie;
+            }
+        }
+        
+
+        private int NR_ATRIBUTE = 9;
 
         public CuloareMasina Culoare { get; set; }
         public CombustibilMasina Combustibil { get; set; }
@@ -25,7 +41,7 @@ namespace LibrarieModele
         public Masini()
         {
             Brend = Model = NumarInmatriculare = string.Empty;
-            AnFabricatie = CapacitateMotor = 0;
+            AnFabricatie = CapacitateMotor = Vechime = 0;
             Inchiriata = false;
         }
 
@@ -38,6 +54,7 @@ namespace LibrarieModele
             Model = _model;
             NumarInmatriculare = _numar;
             AnFabricatie = _an_fabricatie;
+            Vechime = _an_fabricatie;
             CapacitateMotor = _capacitate_motor;
             Culoare = _culoare;
             Combustibil = _combustibil;
@@ -54,9 +71,11 @@ namespace LibrarieModele
                 Model = date[2];
                 NumarInmatriculare = date[3];
                 AnFabricatie = Utils.IntConvert(date[4]);
+                Vechime = Utils.IntConvert(date[4]);
                 CapacitateMotor = Utils.IntConvert(date[5]);
                 Culoare = Utils.CuloareConvert(date[6]);
                 Combustibil = Utils.CombustibilConvert(date[7]);
+                Inchiriata = Utils.InchiriataToBoolConvert(date[8]);
             }
             
         }
@@ -64,14 +83,16 @@ namespace LibrarieModele
 
         public string ConversieLaSir()
         {
-            return string.Format("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}\n",
-                IdMasina, Brend, Model, NumarInmatriculare, AnFabricatie, CapacitateMotor, Culoare, Combustibil);
+            return string.Format("{0} {1} {2} {3} {4} {5} {6} {7} {8}",
+                IdMasina, Brend, Model, NumarInmatriculare, AnFabricatie, CapacitateMotor, 
+                Culoare, Combustibil, Utils.BoolToInchiriataConvert(Inchiriata));
         }
 
         public string ConversieLaSirFisier()
         {
-            return string.Format("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}",
-                IdMasina, Brend, Model, NumarInmatriculare, AnFabricatie, CapacitateMotor, Culoare, Combustibil);
+            return string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8}",
+                IdMasina, Brend, Model, NumarInmatriculare, AnFabricatie, 
+                CapacitateMotor, Culoare, Combustibil, Utils.BoolToInchiriataConvert(Inchiriata));
         }
 
         public bool Compare(Masini masina)
