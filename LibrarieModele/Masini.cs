@@ -14,17 +14,20 @@ namespace LibrarieModele
         public string NumarInmatriculare { get; set; }
         public int AnFabricatie { get; set; }
         public int CapacitateMotor { get; set; }
+        public bool Inchiriata { get; set; }
 
-        private bool _inchiriata;
-        public bool Inchiriata 
+        private int _vechime;
+        private int AN_CURENT = 2020;
+
+        public int Vechime 
         {
             get
             {
-                return this._inchiriata;
+                return _vechime;
             }
             set
             {
-                this._inchiriata = value;
+                _vechime = AN_CURENT - AnFabricatie;
             }
         }
         
@@ -38,7 +41,7 @@ namespace LibrarieModele
         public Masini()
         {
             Brend = Model = NumarInmatriculare = string.Empty;
-            AnFabricatie = CapacitateMotor = 0;
+            AnFabricatie = CapacitateMotor = Vechime = 0;
             Inchiriata = false;
         }
 
@@ -51,6 +54,7 @@ namespace LibrarieModele
             Model = _model;
             NumarInmatriculare = _numar;
             AnFabricatie = _an_fabricatie;
+            Vechime = _an_fabricatie;
             CapacitateMotor = _capacitate_motor;
             Culoare = _culoare;
             Combustibil = _combustibil;
@@ -67,6 +71,7 @@ namespace LibrarieModele
                 Model = date[2];
                 NumarInmatriculare = date[3];
                 AnFabricatie = Utils.IntConvert(date[4]);
+                Vechime = Utils.IntConvert(date[4]);
                 CapacitateMotor = Utils.IntConvert(date[5]);
                 Culoare = Utils.CuloareConvert(date[6]);
                 Combustibil = Utils.CombustibilConvert(date[7]);
@@ -78,7 +83,7 @@ namespace LibrarieModele
 
         public string ConversieLaSir()
         {
-            return string.Format("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}\n",
+            return string.Format("{0} {1} {2} {3} {4} {5} {6} {7} {8}",
                 IdMasina, Brend, Model, NumarInmatriculare, AnFabricatie, CapacitateMotor, 
                 Culoare, Combustibil, Utils.BoolToInchiriataConvert(Inchiriata));
         }

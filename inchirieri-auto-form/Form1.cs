@@ -17,7 +17,7 @@ namespace inchirieri_auto_form
     {
         IStocareData adminMasini;
 
-        Color lblColor = Color.AliceBlue;
+        Color lblColor = Color.Black;
         private const int LUNGIME_MAX = 35;
 
         public Form1()
@@ -222,7 +222,7 @@ namespace inchirieri_auto_form
                 else
                 {
                     FileToFormData(m);
-                    lblProp.Text = string.Format("Masina este inchiriata? {0}", Utils.BoolToInchiriataConvert(m.Inchiriata));
+                    lblProp.Text = string.Format("Vechimea masinii este de {0} ani", m.Vechime);
                     lblProp.Visible = true;
                     if (txtNrInmatriculare.Enabled == true)
                         txtNrInmatriculare.Enabled = false;
