@@ -16,6 +16,7 @@ namespace inchirieri_auto_form
     public partial class Form1 : Form
     {
         IStocareData adminMasini;
+        ArrayList OptiuniSelectate = new ArrayList();
 
         Color lblColor = Color.Black;
         private const int LUNGIME_MAX = 35;
@@ -24,6 +25,42 @@ namespace inchirieri_auto_form
         {
             InitializeComponent();
             adminMasini = StocareFactory.GetAdministratorStocare();
+        }
+
+        private void ckbOptiuni_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckBox checkBoxControl = sender as CheckBox; 
+
+            string optiuneSelectata = checkBoxControl.Text;
+
+            //verificare daca checkbox-ul asupra caruia s-a actionat este selectat
+            if (checkBoxControl.Checked == true)
+                OptiuniSelectate.Add(optiuneSelectata);
+            else
+                OptiuniSelectate.Remove(optiuneSelectata);
+        }
+
+        private void ResetareControale()
+        {
+            txtBrend.Text = txtModel.Text = txtNrInmatriculare.Text = string.Empty;
+            txtCapacitateMotor.Text = txtAnFabricatie.Text = txtInchiriata.Text = string.Empty;
+            rdbAlb.Checked = false;
+            rdbAlbastru.Checked = false;
+            rdbBenzina.Checked = false;
+            rdbDiesel.Checked = false;
+            rdbElectric.Checked = false;
+            rdbGalben.Checked = false;
+            rdbNegru.Checked = false;
+            rdbPortocaliu.Checked = false;
+            rdbVerde.Checked = false;
+            ckbAerConditionat.Checked = false;
+            ckbClima.Checked = false;
+            ckbGeamuriElectrice.Checked = false;
+            ckbIncalzireInScaune.Checked = false;
+            ckbNavigatie.Checked = false;
+            ckbPilotAutomat.Checked = false;
+            ckbXenon.Checked = false;
+            OptiuniSelectate.Clear();
         }
 
         private void btnAdauga_Click(object sender, EventArgs e)
@@ -38,12 +75,15 @@ namespace inchirieri_auto_form
                 masina.NumarInmatriculare = txtNrInmatriculare.Text;
                 masina.AnFabricatie = Utils.IntConvert(txtAnFabricatie.Text);
                 masina.CapacitateMotor = Utils.IntConvert(txtCapacitateMotor.Text);
-                masina.Culoare = Utils.CuloareConvert(txtCuloare.Text);
-                masina.Combustibil = Utils.CombustibilConvert(txtCombustibil.Text);
+                masina.Culoare = GetCuloareMasinaSelectata();
+                masina.Combustibil = GetCombustibilMasinaSelectata();
                 masina.Inchiriata = Utils.InchiriataToBoolConvert(txtInchiriata.Text);
+                masina.Optiuni = new ArrayList();
+                masina.Optiuni.AddRange(OptiuniSelectate);
                 adminMasini.AddMasina(masina);
                 lblInfo.Text = "Masina a fost adaugata";
                 lblInfo.Visible = true;
+                ResetareControale();
             }
         }
 
@@ -57,6 +97,7 @@ namespace inchirieri_auto_form
             lblCuloare.BackColor = lblColor;
             lblCombustibil.BackColor = lblColor;
             lblInchiriata.BackColor = lblColor;
+            lblOptiuni.BackColor = lblColor;
         }
 
         private bool validare()
@@ -72,9 +113,22 @@ namespace inchirieri_auto_form
                 valid = false;
             if (validare_field(txtCapacitateMotor, lblCapacitateMotor) == false)
                 valid = false;
-            if (validare_field(txtCuloare, lblCuloare) == false)
+            if (GetCombustibilMasinaSelectata() == CombustibilMasina.CombustibilInvalid)
+            {
+                lblCombustibil.BackColor = Color.Red;
                 valid = false;
-            if (validare_field(txtCombustibil, lblCombustibil) == false)
+            }
+            if (GetCuloareMasinaSelectata() == CuloareMasina.CuloareInexistenta)
+            {
+                lblCuloare.BackColor = Color.Red;
+                valid = false;
+            }
+            if (OptiuniSelectate.Count == 0)
+            {
+                lblOptiuni.BackColor = Color.Red;
+                valid = false;
+            }
+            if (GetCombustibilMasinaSelectata() == CombustibilMasina.CombustibilInvalid)
                 valid = false;
             if (validare_field(txtInchiriata, lblInchiriata) == false)
                 valid = false;
@@ -86,22 +140,6 @@ namespace inchirieri_auto_form
             if (txtbox == txtAnFabricatie || txtbox == txtCapacitateMotor)
             {
                 if (txtbox.Text.Length == 0 || Utils.IntConvert(txtbox.Text) == Utils.ERROR_CONVERT)
-                {
-                    lbl.BackColor = Color.Red;
-                    return false;
-                }
-            }
-            if (txtbox == txtCombustibil)
-            {
-                if (txtbox.Text.Length == 0 || Utils.CombustibilValidate(txtbox.Text) == false)
-                {
-                    lbl.BackColor = Color.Red;
-                    return false;
-                }
-            }
-            if (txtbox == txtCuloare)
-            {
-                if (txtbox.Text.Length == 0 || Utils.CuloareValidate(txtbox.Text) == false)
                 {
                     lbl.BackColor = Color.Red;
                     return false;
@@ -128,7 +166,7 @@ namespace inchirieri_auto_form
             lblInfo.Visible = false;
             rtbAfisare.Clear();
             ArrayList masinii = adminMasini.GetMasini();
-            foreach(Masini m in masinii)
+            foreach (Masini m in masinii)
             {
                 rtbAfisare.AppendText(m.ConversieLaSir());
                 rtbAfisare.AppendText(Environment.NewLine);
@@ -139,7 +177,7 @@ namespace inchirieri_auto_form
         {
             lblInfo.Visible = false;
             Masini m = adminMasini.GetMasina(txtNrInmatriculare.Text);
-            if(m == null)
+            if (m == null)
             {
                 lblInfo.Text = "Nu exista nici o masina cu acest numar de inmatriculare";
                 lblInfo.Visible = true;
@@ -181,8 +219,10 @@ namespace inchirieri_auto_form
                     m.NumarInmatriculare = txtNrInmatriculare.Text;
                     m.AnFabricatie = Utils.IntConvert(txtAnFabricatie.Text);
                     m.CapacitateMotor = Utils.IntConvert(txtCapacitateMotor.Text);
-                    m.Combustibil = Utils.CombustibilConvert(txtCombustibil.Text);
-                    m.Culoare = Utils.CuloareConvert(txtCuloare.Text);
+                    m.Combustibil = GetCombustibilMasinaSelectata();
+                    m.Culoare = GetCuloareMasinaSelectata();
+                    m.Optiuni = new ArrayList();
+                    m.Optiuni.AddRange(OptiuniSelectate);
                     m.Inchiriata = Utils.InchiriataToBoolConvert(txtInchiriata.Text);
                     adminMasini.UpdateMasina(m);
                     lblInfo.Text = "Datele masinii au fost modificate";
@@ -190,7 +230,7 @@ namespace inchirieri_auto_form
                 }
             }
         }
-        
+
         private void FileToFormData(Masini m)
         {
             txtBrend.Text = m.Brend;
@@ -198,15 +238,17 @@ namespace inchirieri_auto_form
             txtNrInmatriculare.Text = m.NumarInmatriculare;
             txtAnFabricatie.Text = System.Convert.ToString(m.AnFabricatie);
             txtCapacitateMotor.Text = System.Convert.ToString(m.CapacitateMotor);
-            txtCuloare.Text = m.Culoare.ToString();
-            txtCombustibil.Text = m.Combustibil.ToString();
+            SelectCombustibil(m.Combustibil.ToString());
+            SelectCuloare(m.Culoare.ToString());
+            foreach (string optiune in m.Optiuni)
+                SelectOptiune(optiune);
             txtInchiriata.Text = Utils.BoolToInchiriataConvert(m.Inchiriata);
         }
 
         private void btnAfisareProp_Click(object sender, EventArgs e)
         {
             lblInfo.Visible = false;
-            if(txtNrInmatriculare.Text.Length == 0)
+            if (txtNrInmatriculare.Text.Length == 0)
             {
                 lblInfo.Text = "Introdu numarul masinii pentru care sa se afiseze proprietatea";
                 lblInfo.Visible = true;
@@ -229,6 +271,76 @@ namespace inchirieri_auto_form
                     else
                         txtNrInmatriculare.Enabled = true;
                 }
+            }
+        }
+
+        private CuloareMasina GetCuloareMasinaSelectata()
+        {
+            if (rdbAlb.Checked)
+                return CuloareMasina.Alb;
+            if (rdbNegru.Checked)
+                return CuloareMasina.Negru;
+            if (rdbAlbastru.Checked)
+                return CuloareMasina.Albastru;
+            if (rdbVerde.Checked)
+                return CuloareMasina.Verde;
+            if (rdbGalben.Checked)
+                return CuloareMasina.Galben;
+            if (rdbPortocaliu.Checked)
+                return CuloareMasina.Portocaliu;
+            return CuloareMasina.CuloareInexistenta;
+        }
+
+        private CombustibilMasina GetCombustibilMasinaSelectata()
+        {
+            if (rdbBenzina.Checked)
+                return CombustibilMasina.Benzina;
+            if (rdbDiesel.Checked)
+                return CombustibilMasina.Diesel;
+            if (rdbElectric.Checked)
+                return CombustibilMasina.Electric;
+            return CombustibilMasina.CombustibilInvalid;
+        }
+
+        private void SelectCombustibil(string text)
+        {
+            if (rdbBenzina.Text.Equals(text))
+                rdbBenzina.Checked = true;
+            if (rdbDiesel.Text.Equals(text))
+                rdbDiesel.Checked = true;
+            if (rdbElectric.Text.Equals(text))
+                rdbElectric.Checked = true;
+        }
+
+        private void SelectCuloare(string text)
+        {
+            foreach (var control in grbCuloare.Controls)
+            {
+                RadioButton rdb = null;
+                try
+                {
+                    rdb = (RadioButton)control;
+                }
+                catch { }
+
+                if (rdb != null && rdb.Text.Equals(text))
+                    rdb.Checked = true;
+            }
+        }
+
+        private void SelectOptiune(string text)
+        {
+            foreach (var control in grbOptiuni.Controls)
+            {
+                CheckBox ckb = null;
+                try
+                {
+                    ckb = (CheckBox)control;
+                }
+                catch { }
+
+                if (ckb != null && ckb.Text.Equals(text))
+                    ckb.Checked = true;
             }
         }
     }

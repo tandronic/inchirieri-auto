@@ -8,6 +8,7 @@ namespace LibrarieModele
 {
     public enum CuloareMasina
     {
+        CuloareInexistenta = 0,
         Alb = 1,
         Negru = 2,
         Albastru = 3,
@@ -18,19 +19,20 @@ namespace LibrarieModele
 
     public enum OptiuniMasina
     {
-        AerConditiona = 1,
+        OptiuneInexistenta = 0,
+        AerConditionat = 1,
         Clima = 2,
         CutieAutomata = 3,
-        CutieManuala = 4,
+        IncalzireInScaune = 4,
         GeamuriElectrice = 5,
         Navigatie = 6,
         PilotAutomat = 7,
         Xenon = 8
-            // puteri ale lui 2
     };
 
     public enum CombustibilMasina
     {
+        CombustibilInvalid = 0,
         Benzina = 1,
         Diesel = 2,
         Electric = 3

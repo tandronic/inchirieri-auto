@@ -3,11 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections;
 
 namespace LibrarieModele
 {
     public class Masini
     {
+
+        private const string SEPARATOR_AFISARE = " ";
+        private const char SEPARATOR_SECUNDAR_FISIER = ',';
+        private const char SEPARATOR_SECUNDAR_OPTIUNI_FISIER = ';';
+
         public int IdMasina { get; set; }
         public string Brend { get; set; }
         public string Model { get; set; }
@@ -32,11 +38,30 @@ namespace LibrarieModele
         }
         
 
-        private int NR_ATRIBUTE = 9;
+        private int NR_ATRIBUTE = 10;
 
         public CuloareMasina Culoare { get; set; }
         public CombustibilMasina Combustibil { get; set; }
-        public OptiuniMasina Optiuni;
+        public ArrayList Optiuni { get; set; }
+
+        public string OptiuniToString
+        {
+            get
+            {
+                string sOptiuni = string.Empty;
+
+                foreach (string optiune in Optiuni)
+                {
+                    if (sOptiuni != string.Empty)
+                    {
+                        sOptiuni += SEPARATOR_SECUNDAR_OPTIUNI_FISIER;
+                    }
+                    sOptiuni += optiune;
+                }
+
+                return sOptiuni;
+            }
+        }
 
         public Masini()
         {
@@ -47,7 +72,7 @@ namespace LibrarieModele
 
         public Masini(int _id, string _brend, string _model, string _numar,
             int _an_fabricatie, int _capacitate_motor, CuloareMasina _culoare,
-            CombustibilMasina _combustibil, bool _inchiriata)
+            CombustibilMasina _combustibil, ArrayList _optiuni, bool _inchiriata)
         {
             IdMasina = _id;
             Brend = _brend;
@@ -58,6 +83,7 @@ namespace LibrarieModele
             CapacitateMotor = _capacitate_motor;
             Culoare = _culoare;
             Combustibil = _combustibil;
+            Optiuni = _optiuni;
             Inchiriata = _inchiriata;
         }
 
@@ -75,7 +101,11 @@ namespace LibrarieModele
                 CapacitateMotor = Utils.IntConvert(date[5]);
                 Culoare = Utils.CuloareConvert(date[6]);
                 Combustibil = Utils.CombustibilConvert(date[7]);
-                Inchiriata = Utils.InchiriataToBoolConvert(date[8]);
+                string[] optiuni = date[8].Split(SEPARATOR_SECUNDAR_OPTIUNI_FISIER);
+                Optiuni = new ArrayList();
+                foreach (string optiune in optiuni)
+                    Optiuni.Add(optiune);
+                Inchiriata = Utils.InchiriataToBoolConvert(date[9]);
             }
             
         }
@@ -83,16 +113,16 @@ namespace LibrarieModele
 
         public string ConversieLaSir()
         {
-            return string.Format("{0} {1} {2} {3} {4} {5} {6} {7} {8}",
-                IdMasina, Brend, Model, NumarInmatriculare, AnFabricatie, CapacitateMotor, 
-                Culoare, Combustibil, Utils.BoolToInchiriataConvert(Inchiriata));
+            return string.Format("{1}{0}{2}{0}{3}{0}{4}{0}{5}{0}{6}{0}{7}{0}{8}{0}{9}{0}{10}",
+                SEPARATOR_AFISARE, IdMasina, Brend, Model, NumarInmatriculare, AnFabricatie, CapacitateMotor, 
+                Culoare, Combustibil, OptiuniToString, Utils.BoolToInchiriataConvert(Inchiriata));
         }
 
         public string ConversieLaSirFisier()
         {
-            return string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8}",
-                IdMasina, Brend, Model, NumarInmatriculare, AnFabricatie, 
-                CapacitateMotor, Culoare, Combustibil, Utils.BoolToInchiriataConvert(Inchiriata));
+            return string.Format("{1}{0}{2}{0}{3}{0}{4}{0}{5}{0}{6}{0}{7}{0}{8}{0}{9}{0}{10}",
+                SEPARATOR_SECUNDAR_FISIER, IdMasina, Brend, Model, NumarInmatriculare, AnFabricatie, 
+                CapacitateMotor, Culoare, Combustibil, OptiuniToString, Utils.BoolToInchiriataConvert(Inchiriata));
         }
 
         public bool Compare(Masini masina)

@@ -10,8 +10,6 @@ namespace LibrarieModele
     public class Utils
     {
         public static int ERROR_CONVERT = -1;
-        public static CuloareMasina CULOARE_DEFAULT = CuloareMasina.Alb;
-        public static CombustibilMasina COMBUSTIBIL_DEFAULT = CombustibilMasina.Diesel;
         public static int IntConvert(string value)
         {
             int int_value;
@@ -25,7 +23,7 @@ namespace LibrarieModele
             CuloareMasina culoare;
             if (Enum.TryParse(value, true, out culoare))
                 return culoare;
-            return CULOARE_DEFAULT;
+            return CuloareMasina.CuloareInexistenta;
         }
 
         public static bool CuloareValidate(string value)
@@ -41,7 +39,15 @@ namespace LibrarieModele
             CombustibilMasina combustibil;
             if (Enum.TryParse(value, true, out combustibil))
                 return combustibil;
-            return COMBUSTIBIL_DEFAULT;
+            return CombustibilMasina.CombustibilInvalid;
+        }
+
+        public static OptiuniMasina OptiuniConvert(string value)
+        {
+            OptiuniMasina optiune;
+            if (Enum.TryParse(value, true, out optiune))
+                return optiune;
+            return OptiuniMasina.OptiuneInexistenta;
         }
 
         public static bool CombustibilValidate(string value)
