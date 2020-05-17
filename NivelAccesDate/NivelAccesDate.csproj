@@ -42,7 +42,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdministrareClienti_FisierBinar.cs" />
     <Compile Include="AdministrareMasini_FisierBinar.cs" />
+    <Compile Include="AdministrareClienti_FisierText.cs" />
     <Compile Include="AdministrareMasini_FisierText.cs" />
     <Compile Include="IStocareData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

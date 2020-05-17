@@ -7,24 +7,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Collections;
 using NivelAccesDate;
 using LibrarieModele;
 
 namespace inchirieri_auto_form
 {
-    public partial class Form1 : Form
+    public partial class MasiniForm : Form
     {
-        IStocareData adminMasini;
-        ArrayList OptiuniSelectate = new ArrayList();
-
+        IStocareDataMasini adminMasini;
+        List<string> OptiuniSelectate = new List<string>();
         Color lblColor = Color.Black;
         private const int LUNGIME_MAX = 35;
+        private const char DELIMITER = ' ';
 
-        public Form1()
+        public MasiniForm()
         {
             InitializeComponent();
-            adminMasini = StocareFactory.GetAdministratorStocare();
+            adminMasini = StocareFactory.GetAdministratorStocareMasini();
         }
 
         private void ckbOptiuni_CheckedChanged(object sender, EventArgs e)
@@ -55,6 +54,7 @@ namespace inchirieri_auto_form
             rdbVerde.Checked = false;
             ckbAerConditionat.Checked = false;
             ckbClima.Checked = false;
+            ckbCutieAutomata.Checked = false;
             ckbGeamuriElectrice.Checked = false;
             ckbIncalzireInScaune.Checked = false;
             ckbNavigatie.Checked = false;
@@ -69,7 +69,7 @@ namespace inchirieri_auto_form
             SetLblColor();
             if (validare())
             {
-                Masini masina = new Masini();
+                LibrarieModele.Masini masina = new LibrarieModele.Masini();
                 masina.Brend = txtBrend.Text;
                 masina.Model = txtModel.Text;
                 masina.NumarInmatriculare = txtNrInmatriculare.Text;
@@ -78,8 +78,9 @@ namespace inchirieri_auto_form
                 masina.Culoare = GetCuloareMasinaSelectata();
                 masina.Combustibil = GetCombustibilMasinaSelectata();
                 masina.Inchiriata = Utils.InchiriataToBoolConvert(txtInchiriata.Text);
-                masina.Optiuni = new ArrayList();
+                masina.Optiuni = new List<string>();
                 masina.Optiuni.AddRange(OptiuniSelectate);
+                masina.dataActualizare = DateTime.Now;
                 adminMasini.AddMasina(masina);
                 lblInfo.Text = "Masina a fost adaugata";
                 lblInfo.Visible = true;
@@ -161,22 +162,38 @@ namespace inchirieri_auto_form
             return true;
         }
 
+        private void lsbAfisare_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ResetareControale();
+            LibrarieModele.Masini m = adminMasini.GetMasinaByIndex(lsbAfisare.SelectedIndex - 1);
+            if(m != null)
+            {
+                FileToFormData(m);
+            }
+        }
+
         private void btnAfiseaza_Click(object sender, EventArgs e)
         {
             lblInfo.Visible = false;
-            rtbAfisare.Clear();
-            ArrayList masinii = adminMasini.GetMasini();
-            foreach (Masini m in masinii)
+            lsbAfisare.Items.Clear();
+            var antetTabel = String.Format("{0,-5}{1,10}{2,20}{3,25}{4,30}{5,35}{6,40}{7,45}{8,55}\n", "Id", "Brend", "Model", "NumarInmatriculare",
+                "AnFabricare", "CapacitateMotor", "Culoare", "Combustibil", "Inchiriata");
+            lsbAfisare.Items.Add(antetTabel);
+
+            List<Masini> masinii = adminMasini.GetMasini();
+            foreach (LibrarieModele.Masini m in masinii)
             {
-                rtbAfisare.AppendText(m.ConversieLaSir());
-                rtbAfisare.AppendText(Environment.NewLine);
+                var linieTabel = string.Format("{0,-5}{1,10}{2,20}{3,25}{4,35}{5,40}{6,45}{7,50}{8,55}\n", m.IdMasina, m.Brend, m.Model, m.NumarInmatriculare,
+                    m.AnFabricatie, m.CapacitateMotor, m.Culoare, m.Combustibil, m.Inchiriata);
+                lsbAfisare.Items.Add(linieTabel);
             }
         }
 
         private void btnCauta_Click(object sender, EventArgs e)
         {
             lblInfo.Visible = false;
-            Masini m = adminMasini.GetMasina(txtNrInmatriculare.Text);
+            dgvFiltrare.Visible = false;
+            LibrarieModele.Masini m = adminMasini.GetMasina(txtNrInmatriculare.Text);
             if (m == null)
             {
                 lblInfo.Text = "Nu exista nici o masina cu acest numar de inmatriculare";
@@ -185,7 +202,7 @@ namespace inchirieri_auto_form
             else
             {
                 FileToFormData(m);
-                lblCauta.Text = m.ConversieLaSir();
+                lblCauta.Text = m.ConversieLaSir(DELIMITER);
                 lblCauta.Visible = true;
                 if (txtNrInmatriculare.Enabled == true)
                     txtNrInmatriculare.Enabled = false;
@@ -197,13 +214,14 @@ namespace inchirieri_auto_form
         private void btnModifica_Click(object sender, EventArgs e)
         {
             lblInfo.Visible = false;
+            dgvFiltrare.Visible = false;
             if (txtNrInmatriculare.Text.Length == 0)
             {
                 lblInfo.Text = "Introdu un Numar de Inmatriculare pentru a se identifica masina";
                 lblInfo.Visible = true;
                 return;
             }
-            Masini m = adminMasini.GetMasina(txtNrInmatriculare.Text);
+            LibrarieModele.Masini m = adminMasini.GetMasina(txtNrInmatriculare.Text);
             if (m == null)
             {
                 lblInfo.Text = "Nu exista nici o masina cu acest numar de inmatriculare";
@@ -221,7 +239,7 @@ namespace inchirieri_auto_form
                     m.CapacitateMotor = Utils.IntConvert(txtCapacitateMotor.Text);
                     m.Combustibil = GetCombustibilMasinaSelectata();
                     m.Culoare = GetCuloareMasinaSelectata();
-                    m.Optiuni = new ArrayList();
+                    m.Optiuni = new List<string>();
                     m.Optiuni.AddRange(OptiuniSelectate);
                     m.Inchiriata = Utils.InchiriataToBoolConvert(txtInchiriata.Text);
                     adminMasini.UpdateMasina(m);
@@ -231,7 +249,7 @@ namespace inchirieri_auto_form
             }
         }
 
-        private void FileToFormData(Masini m)
+        private void FileToFormData(LibrarieModele.Masini m)
         {
             txtBrend.Text = m.Brend;
             txtModel.Text = m.Model;
@@ -248,6 +266,7 @@ namespace inchirieri_auto_form
         private void btnAfisareProp_Click(object sender, EventArgs e)
         {
             lblInfo.Visible = false;
+            dgvFiltrare.Visible = false;
             if (txtNrInmatriculare.Text.Length == 0)
             {
                 lblInfo.Text = "Introdu numarul masinii pentru care sa se afiseze proprietatea";
@@ -255,7 +274,7 @@ namespace inchirieri_auto_form
             }
             else
             {
-                Masini m = adminMasini.GetMasina(txtNrInmatriculare.Text);
+                LibrarieModele.Masini m = adminMasini.GetMasina(txtNrInmatriculare.Text);
                 if (m == null)
                 {
                     lblInfo.Text = "Nu exista nici o masina cu acest numar de inmatriculare";
@@ -342,6 +361,68 @@ namespace inchirieri_auto_form
                 if (ckb != null && ckb.Text.Equals(text))
                     ckb.Checked = true;
             }
+        }
+
+        private void Masini_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Environment.Exit(1);
+        }
+
+        private void btnMeniu_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+            Main main_form = new Main();
+            main_form.Show();
+        }
+
+        private void meniuPrincipalToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+            Main mainForm = new Main();
+            mainForm.Show();
+        }
+
+        private void clientiToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+            ClientiForm clientiForm = new ClientiForm();
+            clientiForm.Show();
+        }
+
+        private void angajatiToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+            AngajatiForm angajatiForm = new AngajatiForm();
+            angajatiForm.Show();
+        }
+
+        private void btnFiltreaza_Click(object sender, EventArgs e)
+        {
+            this.Width = 1300;
+            dgvFiltrare.Visible = true;
+            FiltreazaMasini();
+        }
+
+        private void FiltreazaMasini()
+        {
+            List<Masini> masini = adminMasini.GetMasini();
+            List<Masini> masiniFiltrate = new List<Masini>();
+            DateTime startDate = dtpStartDate.Value;
+            DateTime endDate = dtpEndDate.Value;
+            foreach (Masini m in masini)
+                if (m.dataActualizare >= startDate && m.dataActualizare <= endDate)
+                    masiniFiltrate.Add(m);
+            AdaugaMasiniDataGridView(masiniFiltrate);
+
+        }
+
+        private void AdaugaMasiniDataGridView(List<Masini> masini)
+        {
+            dgvFiltrare.DataSource = null;
+
+            dgvFiltrare.DataSource = masini;
+
+            //dataGridStudenti.DataSource = studenti.Select(s => new { s.IdStudent, s.Nume, s.Prenume, s.ProgramSTD, Discipline = string.Join(",", s.Discipline), Note = string.Join(",", s.GetNote()) }).ToList();
         }
     }
 }

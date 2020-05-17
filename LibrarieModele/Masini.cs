@@ -9,10 +9,9 @@ namespace LibrarieModele
 {
     public class Masini
     {
-
-        private const string SEPARATOR_AFISARE = " ";
-        private const char SEPARATOR_SECUNDAR_FISIER = ',';
-        private const char SEPARATOR_SECUNDAR_OPTIUNI_FISIER = ';';
+        private char SEPARATOR_SECUNDAR_OPTIUNI_FISIER = ';';
+        private const char SEPARATOR_FISIER = ',';
+        private const char SEPARATOR_AFISARE = ' ';
 
         public int IdMasina { get; set; }
         public string Brend { get; set; }
@@ -21,6 +20,7 @@ namespace LibrarieModele
         public int AnFabricatie { get; set; }
         public int CapacitateMotor { get; set; }
         public bool Inchiriata { get; set; }
+        public DateTime dataActualizare { get; set; }
 
         private int _vechime;
         private int AN_CURENT = 2020;
@@ -38,11 +38,11 @@ namespace LibrarieModele
         }
         
 
-        private int NR_ATRIBUTE = 10;
+        private int NR_ATRIBUTE = 11;
 
         public CuloareMasina Culoare { get; set; }
         public CombustibilMasina Combustibil { get; set; }
-        public ArrayList Optiuni { get; set; }
+        public List<string> Optiuni { get; set; }
 
         public string OptiuniToString
         {
@@ -72,7 +72,7 @@ namespace LibrarieModele
 
         public Masini(int _id, string _brend, string _model, string _numar,
             int _an_fabricatie, int _capacitate_motor, CuloareMasina _culoare,
-            CombustibilMasina _combustibil, ArrayList _optiuni, bool _inchiriata)
+            CombustibilMasina _combustibil, List<string> _optiuni, bool _inchiriata)
         {
             IdMasina = _id;
             Brend = _brend;
@@ -102,27 +102,26 @@ namespace LibrarieModele
                 Culoare = Utils.CuloareConvert(date[6]);
                 Combustibil = Utils.CombustibilConvert(date[7]);
                 string[] optiuni = date[8].Split(SEPARATOR_SECUNDAR_OPTIUNI_FISIER);
-                Optiuni = new ArrayList();
+                Optiuni = new List<string>();
                 foreach (string optiune in optiuni)
                     Optiuni.Add(optiune);
                 Inchiriata = Utils.InchiriataToBoolConvert(date[9]);
+                dataActualizare = System.Convert.ToDateTime(date[10]);
             }
             
         }
 
 
-        public string ConversieLaSir()
+        public string ConversieLaSir(char separator)
         {
-            return string.Format("{1}{0}{2}{0}{3}{0}{4}{0}{5}{0}{6}{0}{7}{0}{8}{0}{9}{0}{10}",
-                SEPARATOR_AFISARE, IdMasina, Brend, Model, NumarInmatriculare, AnFabricatie, CapacitateMotor, 
-                Culoare, Combustibil, OptiuniToString, Utils.BoolToInchiriataConvert(Inchiriata));
-        }
-
-        public string ConversieLaSirFisier()
-        {
-            return string.Format("{1}{0}{2}{0}{3}{0}{4}{0}{5}{0}{6}{0}{7}{0}{8}{0}{9}{0}{10}",
-                SEPARATOR_SECUNDAR_FISIER, IdMasina, Brend, Model, NumarInmatriculare, AnFabricatie, 
-                CapacitateMotor, Culoare, Combustibil, OptiuniToString, Utils.BoolToInchiriataConvert(Inchiriata));
+            char old_separator = SEPARATOR_SECUNDAR_OPTIUNI_FISIER;
+            if(separator == SEPARATOR_AFISARE)
+                SEPARATOR_SECUNDAR_OPTIUNI_FISIER = separator;
+            string response = string.Format("{1}{0}{2}{0}{3}{0}{4}{0}{5}{0}{6}{0}{7}{0}{8}{0}{9}{0}{10}{0}{11}\n",
+                separator, IdMasina, Brend, Model, NumarInmatriculare, AnFabricatie, CapacitateMotor, 
+                Culoare, Combustibil, OptiuniToString, Utils.BoolToInchiriataConvert(Inchiriata), dataActualizare);
+            SEPARATOR_SECUNDAR_OPTIUNI_FISIER = old_separator;
+            return response;
         }
 
         public bool Compare(Masini masina)

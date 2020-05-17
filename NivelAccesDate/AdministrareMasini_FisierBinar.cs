@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Collections;
+using System.Collections.Generic;
 using LibrarieModele;
 
 namespace NivelAccesDate
 {
     //clasa AdministrareMasini_FisierBinar implementeaza interfata IStocareData
-    public class AdministrareMasini_FisierBinar : IStocareData
+    public class AdministrareMasini_FisierBinar : IStocareDataMasini
     {
         string NumeFisier { get; set; }
         public AdministrareMasini_FisierBinar(string numeFisiser)
@@ -15,15 +15,20 @@ namespace NivelAccesDate
 
         public void AddMasina(Masini m)
         {
-            throw new Exception("Optiunea AddSMasini nu este implementata");
+            throw new Exception("Optiunea AddMasini nu este implementata");
         }
 
-        public ArrayList GetMasini()
+        public List<Masini> GetMasini()
         {
             throw new Exception("Optiunea GetMasini nu este implementata");
         }
 
         public Masini GetMasina(string VIN)
+        {
+            throw new Exception("Optiunea GetMasina nu este implementata");
+        }
+
+        public Masini GetMasinaByIndex(int index)
         {
             throw new Exception("Optiunea GetMasina nu este implementata");
         }

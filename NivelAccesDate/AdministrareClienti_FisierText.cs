@@ -6,25 +6,25 @@ using System.IO;
 namespace NivelAccesDate
 {
     //clasa AdministrareStudenti_FisierText implementeaza interfata IStocareData
-    public class AdministrareMasini_FisierText : IStocareDataMasini
+    public class AdministrareClienti_FisierText : IStocareDataClienti
     {
-        private const int ID_PRIMA_MASINA = 1;
+        private const int ID_PRIMUL_CLIENT = 1;
         private const int INCREMENT = 1;
         private const char DELIMITER = ',';
 
         string NumeFisier { get; set; }
-        public AdministrareMasini_FisierText(string numeFisier)
+        public AdministrareClienti_FisierText(string numeFisier)
         {
             this.NumeFisier = numeFisier;
             using (Stream sFisierText = File.Open(numeFisier, FileMode.OpenOrCreate)) { }
         }
-        public void AddMasina(Masini m)
+        public void AddClient(Clienti c)
         {
-            m.IdMasina = GetId();
+            c.IdClient = GetId();
             try
             {
                 using (StreamWriter swFisierText = new StreamWriter(NumeFisier, true))
-                    swFisierText.WriteLine(m.ConversieLaSir(DELIMITER));
+                    swFisierText.WriteLine(c.ConversieLaSir(DELIMITER));
             }
             catch (IOException eIO)
             {
@@ -36,9 +36,9 @@ namespace NivelAccesDate
             }
         }
 
-        public List<Masini> GetMasini()
+        public List<Clienti> GetClienti()
         {
-            List<Masini> masini = new List<Masini>(); 
+            List<Clienti> clienti = new List<Clienti>(); 
             
             try
             {
@@ -49,8 +49,8 @@ namespace NivelAccesDate
                     {
                         if (line != "")
                         {
-                            Masini m = new Masini(line);
-                            masini.Add(m);
+                            Clienti c = new Clienti(line);
+                            clienti.Add(c);
                         }
                     }
                 }
@@ -64,10 +64,10 @@ namespace NivelAccesDate
                 throw new Exception("Eroare generica. Mesaj: " + eGen.Message);
             }
 
-            return masini;
+            return clienti;
         }
 
-        public Masini GetMasina(string NumarInmatriculare)
+        public Clienti GetClient(string CNP)
         {
             try
             {
@@ -77,9 +77,9 @@ namespace NivelAccesDate
                     
                     while ((line = sr.ReadLine()) != null)
                     {
-                        Masini m = new Masini(line);
-                        if (m.NumarInmatriculare == NumarInmatriculare)
-                            return m;
+                        Clienti c = new Clienti(line);
+                        if (c.Cnp == CNP)
+                            return c;
                     }
                 }
             }
@@ -94,7 +94,7 @@ namespace NivelAccesDate
             return null;
         }
 
-        public Masini GetMasinaByIndex(int index)
+        public Clienti GetClientByIndex(int index)
         {
             try
             {
@@ -107,9 +107,9 @@ namespace NivelAccesDate
                     {
                         if (line == "")
                             continue;
-                        Masini m = new Masini(line);
+                        Clienti c = new Clienti(line);
                         if (contor == index)
-                            return m;
+                            return c;
                         contor++;
                     }
                 }
@@ -125,23 +125,23 @@ namespace NivelAccesDate
             return null;
         }
 
-        public bool UpdateMasina(Masini MasinaActualizata)
+        public bool UpdateClient(Clienti ClientActualizat)
         {
-            List<Masini> masinii = GetMasini();
+            List<Clienti> clienti = GetClienti();
             bool actualizareCuSucces = false;
             try
             {
                 using (StreamWriter swFisierText = new StreamWriter(NumeFisier, false))
                 {
-                    foreach (Masini m in masinii)
+                    foreach (Clienti c in clienti)
                     {
-                        if (m.IdMasina != MasinaActualizata.IdMasina)
+                        if (c.IdClient != ClientActualizat.IdClient)
                         {
-                            swFisierText.WriteLine(m.ConversieLaSir(DELIMITER));
+                            swFisierText.WriteLine(c.ConversieLaSir(DELIMITER));
                         }
                         else
                         {
-                            swFisierText.WriteLine(MasinaActualizata.ConversieLaSir(DELIMITER));
+                            swFisierText.WriteLine(ClientActualizat.ConversieLaSir(DELIMITER));
                         }
                     }
                     actualizareCuSucces = true;
@@ -161,7 +161,7 @@ namespace NivelAccesDate
 
         private int GetId()
         {
-            int IdMasina = ID_PRIMA_MASINA;
+            int IdClient = ID_PRIMUL_CLIENT;
             try
             {
                 using (StreamReader sr = new StreamReader(NumeFisier))
@@ -169,8 +169,8 @@ namespace NivelAccesDate
                     string line;
                     while ((line = sr.ReadLine()) != null)
                     {
-                        Masini m = new Masini(line);
-                        IdMasina = m.IdMasina + INCREMENT;
+                        Clienti c = new Clienti(line);
+                        IdClient = c.IdClient + INCREMENT;
                     }
                 }
             }
@@ -182,7 +182,7 @@ namespace NivelAccesDate
             {
                 throw new Exception("Eroare generica. Mesaj: " + eGen.Message);
             }
-            return IdMasina;
+            return IdClient;
         }
     }
 }

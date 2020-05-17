@@ -13,12 +13,11 @@ namespace LibrarieModele
         public string Adresa { get; set; }
         public string NumarTelefon { get; set; }
         public string Cnp { get; set; }
-        public int Varsta { get; set; }
 
-        public string Data()
+        public string Data(char delimiter)
         {
-            return string.Format("{0}, {1}, {2}, {3}, {4}, {5}",
-                Nume, Prenume, Adresa, NumarTelefon, Cnp, Varsta);
+            return string.Format("{1}{0}{2}{0}{3}{0}{4}{0}{5}",
+                delimiter, Nume, Prenume, Adresa, NumarTelefon, Cnp);
         }
 
         public bool Compare(Persoane persoana)
@@ -33,26 +32,21 @@ namespace LibrarieModele
     {
         public int IdAngajat { get; set; }
         public string functie { get; set; }
-        public int ziua_ang { get; set; } 
-        public int luna_ang { get; set; }
-        public int anul_ang { get; set; }
+        public DateTime dataAngajati { get; set; }
 
-        private int NR_ATRIBUTE = 10;
+        private int NR_ATRIBUTE = 8;
 
-        public Angajati(string _nume, string _prenume, string _adresa, string _numar_telefon, 
-            int _varsta, string _cnp, string _functie, int _ziua_ang, int _luna_ang, int _anul_ang)
+        public Angajati(int _id, string _nume, string _prenume, string _adresa, string _numar_telefon, 
+            string _cnp, string _functie, DateTime _dataAngajari)
         {
+            IdAngajat = _id;
             Nume = _nume;
             Prenume = _prenume;
             Adresa = _adresa;
             NumarTelefon = _numar_telefon;
-            Varsta = _varsta;
             Cnp = _cnp;
-
             functie = _functie;
-            ziua_ang = _ziua_ang;
-            luna_ang = _luna_ang;
-            anul_ang = _anul_ang;
+            dataAngajati = _dataAngajari;
         }
 
         public Angajati(string linie)
@@ -60,22 +54,24 @@ namespace LibrarieModele
             string[] date = linie.Split(',');
             if (date.Length == NR_ATRIBUTE)
             {
-                Nume = date[0];
-                Prenume = date[1];
-                Adresa = date[2];
-                NumarTelefon = date[3];
-                Varsta = Utils.IntConvert(date[4]);
-                if (Utils.CNPValidate(date[4]))
-                    Cnp = date[4];
+                IdAngajat = Utils.IntConvert(date[0]);
+                Nume = date[1];
+                Prenume = date[2];
+                Adresa = date[3];
+                NumarTelefon = date[4];
+                if (Utils.CNPValidate(date[5]))
+                    Cnp = date[5];
                 else
                     Cnp = "";
+                functie = date[6];
+                dataAngajati = System.Convert.ToDateTime(date[7]);
             }
         }
 
-        public string ConversieLaSir()
+        public string ConversieLaSir(char delimiter)
         {
-            return string.Format("{0}, {1}, {2}, {3}, {4}", 
-               IdAngajat, Data(), functie, ziua_ang, luna_ang, anul_ang);
+            return string.Format("{1}{0}{2}{0}{3}{0}{4}", 
+               delimiter, IdAngajat, Data(delimiter), functie, dataAngajati);
         }
     }
 
@@ -83,29 +79,32 @@ namespace LibrarieModele
     {
         public int IdClient { get; set; }
         public string NrMasinaInc { get; set; }
-        public int ZiuaInc { get; set; }
-        public int LunaInc { get; set; } 
-        public int AnulInc { get; set; }
-        public int PerioadaInc { get; set; }
+        
+        public DateTime dataInchiriere { get; set; }
 
-        private int NR_ATRIBUTE = 11;
+        public DateTime dataSfarsitInc { get; set; }
 
-        public Clienti(string _nume, string _prenume, string _adresa, string _numar_telefon,
-            int _varsta, string _cnp, string _nr_masina_inc, int _ziua_inc, int _luna_inc, 
-            int _anul_inc, int _perioada_inc)
+        private int NR_ATRIBUTE = 9;
+
+        public Clienti()
         {
+            IdClient = 0;
+            Nume = Prenume = Adresa = NumarTelefon = Cnp = NrMasinaInc = string.Empty;
+        }
+
+        public Clienti(int _id, string _nume, string _prenume, string _adresa, string _numarTelefon,
+            string _cnp, string _NrMasinaInc, DateTime _dataInchiriere, DateTime _dataSfarsitInc)
+        {
+            IdClient = _id;
             Nume = _nume;
             Prenume = _prenume;
             Adresa = _adresa;
-            NumarTelefon = _numar_telefon;
-            Varsta = _varsta;
+            NumarTelefon = _numarTelefon;
             Cnp = _cnp;
 
-            NrMasinaInc = _nr_masina_inc;
-            ZiuaInc = _ziua_inc;
-            LunaInc = _luna_inc;
-            AnulInc = _anul_inc;
-            PerioadaInc = _perioada_inc;
+            NrMasinaInc = _NrMasinaInc;
+            dataInchiriere = _dataInchiriere;
+            dataSfarsitInc = _dataSfarsitInc;
         }
 
         public Clienti(string linie)
@@ -113,30 +112,28 @@ namespace LibrarieModele
             string[] date = linie.Split(',');
             if(date.Length == NR_ATRIBUTE)
             {
-                Nume = date[0];
-                Prenume = date[1];
-                Adresa = date[2];
-                if (Utils.PhoneValidate(date[3]))
-                    NumarTelefon = date[3];
+                IdClient = Utils.IntConvert(date[0]);
+                Nume = date[1];
+                Prenume = date[2];
+                Adresa = date[3];
+                if (Utils.PhoneValidate(date[4]))
+                    NumarTelefon = date[4];
                 else
                     NumarTelefon = "";
-                Varsta = Utils.IntConvert(date[4]);
                 if (Utils.CNPValidate(date[5]))
                     Cnp = date[5];
                 else
                     Cnp = "";
                 NrMasinaInc = date[6];
-                ZiuaInc = Utils.IntConvert(date[7]);
-                LunaInc = Utils.IntConvert(date[8]);
-                AnulInc = Utils.IntConvert(date[9]);
-                PerioadaInc = Utils.IntConvert(date[10]);
+                dataInchiriere = System.Convert.ToDateTime(date[7]);
+                dataSfarsitInc = System.Convert.ToDateTime(date[8]);
             }
         }
 
-        public string ConversieLaSir()
+        public string ConversieLaSir(char delimiter)
         {
-            return string.Format("{0}, {1}, {2}, {3}, {4}, {5}",
-                IdClient, Data(), NrMasinaInc, ZiuaInc, LunaInc, AnulInc, PerioadaInc);
+            return string.Format("{1}{0}{2}{0}{3}{0}{4}{0}{5}",
+                delimiter, IdClient, Data(delimiter), NrMasinaInc, dataInchiriere, dataSfarsitInc);
         }
     }
 }

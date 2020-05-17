@@ -69,14 +69,14 @@ namespace LibrarieModele
         public static bool PhoneValidate(string value)
         {
             Regex regex = new Regex("^[0-9]+$");
-            if (value.Length == 11 && regex.IsMatch(value))
+            if (value.Length == 10 && regex.IsMatch(value))
                 return true;
             return false;
         }
 
         public static bool InchiriataToBoolConvert(string value)
         {
-            if (value.Equals("DA"))
+            if (value.Equals("Da"))
                 return true;
             return false;
         }
@@ -84,8 +84,8 @@ namespace LibrarieModele
         public static string BoolToInchiriataConvert(bool value)
         {
             if (value)
-                return "DA";
-            return "NU";
+                return "Da";
+            return "Nu";
         }
 
         public static bool InchiriataValidate(string value)
