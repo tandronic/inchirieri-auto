@@ -94,5 +94,13 @@ namespace LibrarieModele
                 return true;
             return false;
         }
+
+        public static Functie FunctieConvert(string value)
+        {
+            Functie functie;
+            if (Enum.TryParse(value, true, out functie))
+                return functie;
+            return Functie.FunctieInvalid;
+        }
     }
 }

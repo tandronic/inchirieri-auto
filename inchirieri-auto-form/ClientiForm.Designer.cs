@@ -216,6 +216,7 @@
             this.btnFiltreaza.TabIndex = 44;
             this.btnFiltreaza.Text = "Filtreaza";
             this.btnFiltreaza.UseVisualStyleBackColor = false;
+            this.btnFiltreaza.Click += new System.EventHandler(this.btnFiltreaza_Click);
             // 
             // btnModifica
             // 

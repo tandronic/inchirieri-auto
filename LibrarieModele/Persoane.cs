@@ -31,13 +31,19 @@ namespace LibrarieModele
     public class Angajati: Persoane
     {
         public int IdAngajat { get; set; }
-        public string functie { get; set; }
-        public DateTime dataAngajati { get; set; }
+        public Functie Functie { get; set; }
+        public DateTime DataAngajare { get; set; }
 
         private int NR_ATRIBUTE = 8;
 
+        public Angajati()
+        {
+            IdAngajat = 0;
+            Nume = Prenume = Adresa = NumarTelefon = Cnp = string.Empty;
+        }
+
         public Angajati(int _id, string _nume, string _prenume, string _adresa, string _numar_telefon, 
-            string _cnp, string _functie, DateTime _dataAngajari)
+            string _cnp, Functie _functie, DateTime _dataAngajare)
         {
             IdAngajat = _id;
             Nume = _nume;
@@ -45,8 +51,8 @@ namespace LibrarieModele
             Adresa = _adresa;
             NumarTelefon = _numar_telefon;
             Cnp = _cnp;
-            functie = _functie;
-            dataAngajati = _dataAngajari;
+            Functie = _functie;
+            DataAngajare = _dataAngajare;
         }
 
         public Angajati(string linie)
@@ -63,15 +69,15 @@ namespace LibrarieModele
                     Cnp = date[5];
                 else
                     Cnp = "";
-                functie = date[6];
-                dataAngajati = System.Convert.ToDateTime(date[7]);
+                Functie = Utils.FunctieConvert(date[6]);
+                DataAngajare = System.Convert.ToDateTime(date[7]);
             }
         }
 
         public string ConversieLaSir(char delimiter)
         {
             return string.Format("{1}{0}{2}{0}{3}{0}{4}", 
-               delimiter, IdAngajat, Data(delimiter), functie, dataAngajati);
+               delimiter, IdAngajat, Data(delimiter), Functie, DataAngajare);
         }
     }
 

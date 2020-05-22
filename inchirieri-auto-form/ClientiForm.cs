@@ -17,7 +17,6 @@ namespace inchirieri_auto_form
         IStocareDataClienti adminClienti;
         IStocareDataMasini adminMasini;
         Color lblColor = Color.Black;
-        private const char DELIMITER = ' ';
         public ClientiForm()
         {
             InitializeComponent();
@@ -63,7 +62,7 @@ namespace inchirieri_auto_form
 
         private void ResetareControale()
         {
-            txtNume.Text = txtPrenume.Text = txtNrTel.Text = txtCnp.Text = string.Empty;
+            txtNume.Text = txtPrenume.Text = txtAdresa.Text = txtNrTel.Text = txtCnp.Text = string.Empty;
             cmbNrMasina.Items.Clear();
         }
 
@@ -225,6 +224,19 @@ namespace inchirieri_auto_form
                 Clienti c = adminClienti.GetClient(cnp);
                 FileToFormData(c);
             }
+        }
+
+        private void btnFiltreaza_Click(object sender, EventArgs e)
+        {
+            List<Clienti> clienti = adminClienti.GetClienti();
+            List<Clienti> clientiFiltrati = new List<Clienti>();
+            DateTime startDate = dtpStartInc.Value;
+            DateTime endDate = dtpSfarsitInc.Value;
+            foreach (Clienti c in clienti)
+                if (c.dataInchiriere == startDate && c.dataSfarsitInc == endDate)
+                    clientiFiltrati.Add(c);
+            dgvAfisare.DataSource = null;
+            dgvAfisare.DataSource = clientiFiltrati;
         }
     }
 }

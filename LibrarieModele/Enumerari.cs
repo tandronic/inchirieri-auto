@@ -37,4 +37,13 @@ namespace LibrarieModele
         Diesel = 2,
         Electric = 3
     };
+
+    public enum Functie
+    {
+        FunctieInvalid = 0,
+        Director = 1,
+        Marketing = 2,
+        Mecanic = 3,
+        FemeieServiciu = 4
+    };
 }

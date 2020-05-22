@@ -25,4 +25,15 @@ namespace NivelAccesDate
 
         bool UpdateClient(Clienti ClientActualizat);
     }
+
+    public interface IStocareDataAngajati
+    {
+        void AddAngajat(Angajati a);
+        List<Angajati> GetAngajati();
+
+        Angajati GetAngajat(string CNP);
+        Angajati GetAngajatByIndex(int index);
+
+        bool UpdateAngajat(Angajati AngajatActualizat);
+    }
 }

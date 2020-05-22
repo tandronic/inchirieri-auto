@@ -37,5 +37,10 @@ namespace inchirieri_auto_form
             AngajatiForm angajatiForm = new AngajatiForm();
             angajatiForm.Show();
         }
+
+        private void Main_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Environment.Exit(1);
+        }
     }
 }
