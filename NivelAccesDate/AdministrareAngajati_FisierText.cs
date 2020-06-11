@@ -1,11 +1,12 @@
-﻿using LibrarieModele;
+﻿// Andronic Tudor - 3121A
+
+using LibrarieModele;
 using System;
 using System.Collections.Generic;
 using System.IO;
 
 namespace NivelAccesDate
 {
-    //clasa AdministrareStudenti_FisierText implementeaza interfata IStocareData
     public class AdministrareAngajati_FisierText : IStocareDataAngajati
     {
         private const int ID_PRIMUL_ANGAJAT = 1;

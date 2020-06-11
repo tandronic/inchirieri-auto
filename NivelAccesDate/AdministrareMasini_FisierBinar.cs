@@ -1,10 +1,11 @@
-﻿using System;
+﻿// Andronic Tudor - 3121A
+
+using System;
 using System.Collections.Generic;
 using LibrarieModele;
 
 namespace NivelAccesDate
 {
-    //clasa AdministrareMasini_FisierBinar implementeaza interfata IStocareData
     public class AdministrareMasini_FisierBinar : IStocareDataMasini
     {
         string NumeFisier { get; set; }

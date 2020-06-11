@@ -1,4 +1,6 @@
-﻿using NivelAccesDate;
+﻿// Andronic Tudor - 3121A
+
+using NivelAccesDate;
 using System.Configuration;
 
 namespace inchirieri_auto_form
@@ -17,6 +19,7 @@ namespace inchirieri_auto_form
             {
                 switch (formatSalvare)
                 {
+                    // set type of file
                     default:
                     case "bin":
                         return new AdministrareMasini_FisierBinar(numeFisierMasini + "." + formatSalvare);
@@ -34,6 +37,7 @@ namespace inchirieri_auto_form
             {
                 switch (formatSalvare)
                 {
+                    // set type of file
                     default:
                     case "bin":
                         return new AdministrareClienti_FisierBinar(numeFisierClienti + "." + formatSalvare);
@@ -51,6 +55,7 @@ namespace inchirieri_auto_form
             {
                 switch (formatSalvare)
                 {
+                    // set type of file
                     default:
                     case "bin":
                         return new AdministrareAngajati_FisierBinar(numeFisierAngajati + "." + formatSalvare);

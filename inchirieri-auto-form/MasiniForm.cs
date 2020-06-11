@@ -1,14 +1,12 @@
-﻿using System;
+﻿// Andronic Tudor - 3121A
+
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using NivelAccesDate;
 using LibrarieModele;
+using System.IO;
 
 namespace inchirieri_auto_form
 {
@@ -32,7 +30,6 @@ namespace inchirieri_auto_form
 
             string optiuneSelectata = checkBoxControl.Text;
 
-            //verificare daca checkbox-ul asupra caruia s-a actionat este selectat
             if (checkBoxControl.Checked == true)
                 OptiuniSelectate.Add(optiuneSelectata);
             else
@@ -41,8 +38,10 @@ namespace inchirieri_auto_form
 
         private void ResetareControale()
         {
+            // Reset all imputs
+            txtNrInmatriculare.Enabled = true;
             txtBrend.Text = txtModel.Text = txtNrInmatriculare.Text = string.Empty;
-            txtCapacitateMotor.Text = txtAnFabricatie.Text = txtInchiriata.Text = string.Empty;
+            txtCapacitateMotor.Text = txtAnFabricatie.Text  = string.Empty;
             rdbAlb.Checked = false;
             rdbAlbastru.Checked = false;
             rdbBenzina.Checked = false;
@@ -60,15 +59,19 @@ namespace inchirieri_auto_form
             ckbNavigatie.Checked = false;
             ckbPilotAutomat.Checked = false;
             ckbXenon.Checked = false;
+            ckbInchiriata.Checked = false;
             OptiuniSelectate.Clear();
         }
 
         private void btnAdauga_Click(object sender, EventArgs e)
         {
             lblInfo.Visible = false;
+            txtNrInmatriculare.Enabled = true;
+            // Set default BackColor for all labels
             SetLblColor();
             if (validare())
             {
+                // Add a new car if the data is valid
                 LibrarieModele.Masini masina = new LibrarieModele.Masini();
                 masina.Brend = txtBrend.Text;
                 masina.Model = txtModel.Text;
@@ -77,19 +80,22 @@ namespace inchirieri_auto_form
                 masina.CapacitateMotor = Utils.IntConvert(txtCapacitateMotor.Text);
                 masina.Culoare = GetCuloareMasinaSelectata();
                 masina.Combustibil = GetCombustibilMasinaSelectata();
-                masina.Inchiriata = Utils.InchiriataToBoolConvert(txtInchiriata.Text);
+                masina.Inchiriata = ckbInchiriata.Checked;
                 masina.Optiuni = new List<string>();
                 masina.Optiuni.AddRange(OptiuniSelectate);
                 masina.dataActualizare = DateTime.Now;
+                // Add a new car in the file
                 adminMasini.AddMasina(masina);
                 lblInfo.Text = "Masina a fost adaugata";
                 lblInfo.Visible = true;
+                // Reset all input text
                 ResetareControale();
             }
         }
 
         private void SetLblColor()
         {
+            // Set BackColor for all labels
             lblBrend.BackColor = lblColor;
             lblModel.BackColor = lblColor;
             lblNrInmatriculare.BackColor = lblColor;
@@ -103,6 +109,7 @@ namespace inchirieri_auto_form
 
         private bool validare()
         {
+            // Check if all fields are valid
             bool valid = true;
             if (validare_field(txtBrend, lblBrend) == false)
                 valid = false;
@@ -131,24 +138,15 @@ namespace inchirieri_auto_form
             }
             if (GetCombustibilMasinaSelectata() == CombustibilMasina.CombustibilInvalid)
                 valid = false;
-            if (validare_field(txtInchiriata, lblInchiriata) == false)
-                valid = false;
             return valid;
         }
 
         private bool validare_field(TextBox txtbox, Label lbl)
         {
+            // Check if one field is valid
             if (txtbox == txtAnFabricatie || txtbox == txtCapacitateMotor)
             {
                 if (txtbox.Text.Length == 0 || Utils.IntConvert(txtbox.Text) == Utils.ERROR_CONVERT)
-                {
-                    lbl.BackColor = Color.Red;
-                    return false;
-                }
-            }
-            if (txtbox == txtInchiriata)
-            {
-                if (txtbox.Text.Length == 0 || Utils.InchiriataValidate(txtbox.Text) == false)
                 {
                     lbl.BackColor = Color.Red;
                     return false;
@@ -164,6 +162,7 @@ namespace inchirieri_auto_form
 
         private void lsbAfisare_SelectedIndexChanged(object sender, EventArgs e)
         {
+            // Reset all input text
             ResetareControale();
             LibrarieModele.Masini m = adminMasini.GetMasinaByIndex(lsbAfisare.SelectedIndex - 1);
             if(m != null)
@@ -174,6 +173,8 @@ namespace inchirieri_auto_form
 
         private void btnAfiseaza_Click(object sender, EventArgs e)
         {
+            // Display all the cars
+            ResetareControale();
             lblInfo.Visible = false;
             lsbAfisare.Items.Clear();
             var antetTabel = String.Format("{0,-5}{1,10}{2,20}{3,25}{4,30}{5,35}{6,40}{7,45}{8,55}\n", "Id", "Brend", "Model", "NumarInmatriculare",
@@ -191,8 +192,10 @@ namespace inchirieri_auto_form
 
         private void btnCauta_Click(object sender, EventArgs e)
         {
+            // Search for a car
             lblInfo.Visible = false;
             dgvFiltrare.Visible = false;
+            txtNrInmatriculare.Enabled = true;
             LibrarieModele.Masini m = adminMasini.GetMasina(txtNrInmatriculare.Text);
             if (m == null)
             {
@@ -201,18 +204,16 @@ namespace inchirieri_auto_form
             }
             else
             {
+                // Set car data to all imput fields
                 FileToFormData(m);
-                lblCauta.Text = m.ConversieLaSir(DELIMITER);
-                lblCauta.Visible = true;
-                if (txtNrInmatriculare.Enabled == true)
-                    txtNrInmatriculare.Enabled = false;
-                else
-                    txtNrInmatriculare.Enabled = true;
+                lblInfo.Text = "Masina a fost gasita";
+                lblInfo.Visible = true;
             }
         }
 
         private void btnModifica_Click(object sender, EventArgs e)
         {
+            // Update car data
             lblInfo.Visible = false;
             dgvFiltrare.Visible = false;
             if (txtNrInmatriculare.Text.Length == 0)
@@ -241,16 +242,19 @@ namespace inchirieri_auto_form
                     m.Culoare = GetCuloareMasinaSelectata();
                     m.Optiuni = new List<string>();
                     m.Optiuni.AddRange(OptiuniSelectate);
-                    m.Inchiriata = Utils.InchiriataToBoolConvert(txtInchiriata.Text);
+                    m.Inchiriata = ckbInchiriata.Checked;
                     adminMasini.UpdateMasina(m);
                     lblInfo.Text = "Datele masinii au fost modificate";
                     lblInfo.Visible = true;
+                    ResetareControale();
                 }
             }
         }
 
         private void FileToFormData(LibrarieModele.Masini m)
         {
+            // Set car data to all imput fields
+            txtNrInmatriculare.Enabled = false;
             txtBrend.Text = m.Brend;
             txtModel.Text = m.Model;
             txtNrInmatriculare.Text = m.NumarInmatriculare;
@@ -260,7 +264,7 @@ namespace inchirieri_auto_form
             SelectCuloare(m.Culoare.ToString());
             foreach (string optiune in m.Optiuni)
                 SelectOptiune(optiune);
-            txtInchiriata.Text = Utils.BoolToInchiriataConvert(m.Inchiriata);
+            ckbInchiriata.Checked = m.Inchiriata;
         }
 
         private void btnAfisareProp_Click(object sender, EventArgs e)
@@ -405,12 +409,13 @@ namespace inchirieri_auto_form
 
         private void FiltreazaMasini()
         {
+            // Filter cars
             List<Masini> masini = adminMasini.GetMasini();
             List<Masini> masiniFiltrate = new List<Masini>();
-            DateTime startDate = dtpStartDate.Value;
-            DateTime endDate = dtpEndDate.Value;
+            DateTime startDate = dtpStartDate.Value.Date;
+            DateTime endDate = dtpEndDate.Value.Date;
             foreach (Masini m in masini)
-                if (m.dataActualizare >= startDate && m.dataActualizare <= endDate)
+                if (m.dataActualizare.Date >= startDate && m.dataActualizare.Date <= endDate)
                     masiniFiltrate.Add(m);
             AdaugaMasiniDataGridView(masiniFiltrate);
 
@@ -419,10 +424,45 @@ namespace inchirieri_auto_form
         private void AdaugaMasiniDataGridView(List<Masini> masini)
         {
             dgvFiltrare.DataSource = null;
-
             dgvFiltrare.DataSource = masini;
+        }
 
-            //dataGridStudenti.DataSource = studenti.Select(s => new { s.IdStudent, s.Nume, s.Prenume, s.ProgramSTD, Discipline = string.Join(",", s.Discipline), Note = string.Join(",", s.GetNote()) }).ToList();
+        private void salveazaToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            lblInfo.Visible = false;
+            saveFile.ShowDialog();
+            string numeFisier = saveFile.FileName;
+            bool succes = SalvareMasina(numeFisier);
+            if (succes)
+                lblInfo.Text = "Fisierul a fost scris";
+            else
+                lblInfo.Text = "Scrierea in fisier nu a fost realizata";
+            lblInfo.Visible = true;
+        }
+
+        private bool SalvareMasina(string numeFisier)
+        {
+            // Save car data to a specific text file
+            bool succes = false;
+            List<Masini> salvareMasini = adminMasini.GetMasini();
+            try
+            {
+                using (StreamWriter swFisierText = new StreamWriter(numeFisier, true))
+                {
+                    foreach (Masini m in salvareMasini)
+                        swFisierText.WriteLine(m.ConversieLaSir(DELIMITER));
+                }
+                succes = true;
+            }
+            catch (IOException eIO)
+            {
+                throw new Exception("Eroare la deschiderea fisierului. Mesaj: " + eIO.Message);
+            }
+            catch (Exception eGen)
+            {
+                throw new Exception("Eroare generica. Mesaj: " + eGen.Message);
+            }
+            return succes;
         }
     }
 }

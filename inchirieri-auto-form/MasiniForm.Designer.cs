@@ -42,12 +42,10 @@
             this.txtCapacitateMotor = new System.Windows.Forms.TextBox();
             this.btnAdauga = new System.Windows.Forms.Button();
             this.lblCombustibil = new System.Windows.Forms.Label();
-            this.txtInchiriata = new System.Windows.Forms.TextBox();
             this.lblInchiriata = new System.Windows.Forms.Label();
             this.lblInfo = new System.Windows.Forms.Label();
             this.btnAfiseaza = new System.Windows.Forms.Button();
             this.btnCauta = new System.Windows.Forms.Button();
-            this.lblCauta = new System.Windows.Forms.Label();
             this.btnModifica = new System.Windows.Forms.Button();
             this.btnAfisareProp = new System.Windows.Forms.Button();
             this.lblProp = new System.Windows.Forms.Label();
@@ -77,12 +75,15 @@
             this.meniuPrincipalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.clientiToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.angajatiToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.salveazaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dtpStartDate = new System.Windows.Forms.DateTimePicker();
             this.lblDataInceput = new System.Windows.Forms.Label();
             this.dtpEndDate = new System.Windows.Forms.DateTimePicker();
             this.lblDataSfarsit = new System.Windows.Forms.Label();
             this.btnFiltreaza = new System.Windows.Forms.Button();
             this.dgvFiltrare = new System.Windows.Forms.DataGridView();
+            this.saveFile = new System.Windows.Forms.SaveFileDialog();
+            this.ckbInchiriata = new System.Windows.Forms.CheckBox();
             this.grbCuloare.SuspendLayout();
             this.grbCombustibil.SuspendLayout();
             this.grbOptiuni.SuspendLayout();
@@ -227,21 +228,13 @@
             this.lblCombustibil.TabIndex = 17;
             this.lblCombustibil.Text = "Combustibil";
             // 
-            // txtInchiriata
-            // 
-            this.txtInchiriata.Location = new System.Drawing.Point(257, 506);
-            this.txtInchiriata.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.txtInchiriata.Name = "txtInchiriata";
-            this.txtInchiriata.Size = new System.Drawing.Size(229, 22);
-            this.txtInchiriata.TabIndex = 20;
-            // 
             // lblInchiriata
             // 
             this.lblInchiriata.AutoSize = true;
             this.lblInchiriata.BackColor = System.Drawing.Color.Black;
             this.lblInchiriata.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblInchiriata.ForeColor = System.Drawing.Color.White;
-            this.lblInchiriata.Location = new System.Drawing.Point(11, 506);
+            this.lblInchiriata.Location = new System.Drawing.Point(12, 509);
             this.lblInchiriata.Name = "lblInchiriata";
             this.lblInchiriata.Size = new System.Drawing.Size(87, 20);
             this.lblInchiriata.TabIndex = 19;
@@ -273,6 +266,8 @@
             // 
             // btnCauta
             // 
+            this.btnCauta.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCauta.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.btnCauta.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnCauta.Location = new System.Drawing.Point(510, 407);
@@ -283,17 +278,6 @@
             this.btnCauta.Text = "Cauta";
             this.btnCauta.UseVisualStyleBackColor = false;
             this.btnCauta.Click += new System.EventHandler(this.btnCauta_Click);
-            // 
-            // lblCauta
-            // 
-            this.lblCauta.AutoSize = true;
-            this.lblCauta.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblCauta.Location = new System.Drawing.Point(716, 417);
-            this.lblCauta.Name = "lblCauta";
-            this.lblCauta.Size = new System.Drawing.Size(47, 18);
-            this.lblCauta.TabIndex = 24;
-            this.lblCauta.Text = "Cauta";
-            this.lblCauta.Visible = false;
             // 
             // btnModifica
             // 
@@ -613,7 +597,8 @@
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.meniuPrincipalToolStripMenuItem,
             this.clientiToolStripMenuItem,
-            this.angajatiToolStripMenuItem});
+            this.angajatiToolStripMenuItem,
+            this.salveazaToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(1246, 30);
@@ -640,6 +625,13 @@
             this.angajatiToolStripMenuItem.Size = new System.Drawing.Size(79, 26);
             this.angajatiToolStripMenuItem.Text = "Angajati";
             this.angajatiToolStripMenuItem.Click += new System.EventHandler(this.angajatiToolStripMenuItem_Click);
+            // 
+            // salveazaToolStripMenuItem
+            // 
+            this.salveazaToolStripMenuItem.Name = "salveazaToolStripMenuItem";
+            this.salveazaToolStripMenuItem.Size = new System.Drawing.Size(81, 26);
+            this.salveazaToolStripMenuItem.Text = "Salveaza";
+            this.salveazaToolStripMenuItem.Click += new System.EventHandler(this.salveazaToolStripMenuItem_Click);
             // 
             // dtpStartDate
             // 
@@ -705,6 +697,16 @@
             this.dgvFiltrare.TabIndex = 40;
             this.dgvFiltrare.Visible = false;
             // 
+            // ckbInchiriata
+            // 
+            this.ckbInchiriata.AutoSize = true;
+            this.ckbInchiriata.Location = new System.Drawing.Point(257, 508);
+            this.ckbInchiriata.Name = "ckbInchiriata";
+            this.ckbInchiriata.Size = new System.Drawing.Size(87, 21);
+            this.ckbInchiriata.TabIndex = 41;
+            this.ckbInchiriata.Text = "Inchiriata";
+            this.ckbInchiriata.UseVisualStyleBackColor = true;
+            // 
             // MasiniForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -712,6 +714,7 @@
             this.BackgroundImage = global::inchirieri_auto_form.Properties.Resources.car;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(1246, 604);
+            this.Controls.Add(this.ckbInchiriata);
             this.Controls.Add(this.dgvFiltrare);
             this.Controls.Add(this.btnFiltreaza);
             this.Controls.Add(this.lblDataSfarsit);
@@ -726,11 +729,9 @@
             this.Controls.Add(this.lblProp);
             this.Controls.Add(this.btnAfisareProp);
             this.Controls.Add(this.btnModifica);
-            this.Controls.Add(this.lblCauta);
             this.Controls.Add(this.btnCauta);
             this.Controls.Add(this.btnAfiseaza);
             this.Controls.Add(this.lblInfo);
-            this.Controls.Add(this.txtInchiriata);
             this.Controls.Add(this.lblInchiriata);
             this.Controls.Add(this.lblCombustibil);
             this.Controls.Add(this.btnAdauga);
@@ -782,12 +783,10 @@
         private System.Windows.Forms.TextBox txtCapacitateMotor;
         private System.Windows.Forms.Button btnAdauga;
         private System.Windows.Forms.Label lblCombustibil;
-        private System.Windows.Forms.TextBox txtInchiriata;
         private System.Windows.Forms.Label lblInchiriata;
         private System.Windows.Forms.Label lblInfo;
         private System.Windows.Forms.Button btnAfiseaza;
         private System.Windows.Forms.Button btnCauta;
-        private System.Windows.Forms.Label lblCauta;
         private System.Windows.Forms.Button btnModifica;
         private System.Windows.Forms.Button btnAfisareProp;
         private System.Windows.Forms.Label lblProp;
@@ -823,6 +822,9 @@
         private System.Windows.Forms.Label lblDataSfarsit;
         private System.Windows.Forms.Button btnFiltreaza;
         private System.Windows.Forms.DataGridView dgvFiltrare;
+        private System.Windows.Forms.ToolStripMenuItem salveazaToolStripMenuItem;
+        private System.Windows.Forms.SaveFileDialog saveFile;
+        private System.Windows.Forms.CheckBox ckbInchiriata;
     }
 }
 

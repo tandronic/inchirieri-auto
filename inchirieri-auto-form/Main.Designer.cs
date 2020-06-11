@@ -78,6 +78,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = global::inchirieri_auto_form.Properties.Resources.car;
+            this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(798, 445);
             this.Controls.Add(this.btnAngajati);
             this.Controls.Add(this.btnClienti);

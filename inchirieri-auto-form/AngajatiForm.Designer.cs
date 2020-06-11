@@ -33,6 +33,7 @@
             this.meniuPrincipalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.masiniToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.clientiToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.salvareToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dgvAfisare = new System.Windows.Forms.DataGridView();
             this.lblInfo = new System.Windows.Forms.Label();
             this.cmbFunctie = new System.Windows.Forms.ComboBox();
@@ -54,6 +55,7 @@
             this.lblAdresa = new System.Windows.Forms.Label();
             this.lblPrenume = new System.Windows.Forms.Label();
             this.lblNume = new System.Windows.Forms.Label();
+            this.saveFile = new System.Windows.Forms.SaveFileDialog();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvAfisare)).BeginInit();
             this.SuspendLayout();
@@ -64,36 +66,46 @@
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.meniuPrincipalToolStripMenuItem,
             this.masiniToolStripMenuItem,
-            this.clientiToolStripMenuItem});
+            this.clientiToolStripMenuItem,
+            this.salvareToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1005, 28);
+            this.menuStrip1.Size = new System.Drawing.Size(1005, 30);
             this.menuStrip1.TabIndex = 46;
             this.menuStrip1.Text = "menuStrip1";
             // 
             // meniuPrincipalToolStripMenuItem
             // 
             this.meniuPrincipalToolStripMenuItem.Name = "meniuPrincipalToolStripMenuItem";
-            this.meniuPrincipalToolStripMenuItem.Size = new System.Drawing.Size(126, 24);
+            this.meniuPrincipalToolStripMenuItem.Size = new System.Drawing.Size(126, 26);
             this.meniuPrincipalToolStripMenuItem.Text = "Meniu principal";
             this.meniuPrincipalToolStripMenuItem.Click += new System.EventHandler(this.meniuPrincipalToolStripMenuItem_Click_1);
             // 
             // masiniToolStripMenuItem
             // 
             this.masiniToolStripMenuItem.Name = "masiniToolStripMenuItem";
-            this.masiniToolStripMenuItem.Size = new System.Drawing.Size(66, 24);
+            this.masiniToolStripMenuItem.Size = new System.Drawing.Size(66, 26);
             this.masiniToolStripMenuItem.Text = "Masini";
             this.masiniToolStripMenuItem.Click += new System.EventHandler(this.masiniToolStripMenuItem_Click_1);
             // 
             // clientiToolStripMenuItem
             // 
             this.clientiToolStripMenuItem.Name = "clientiToolStripMenuItem";
-            this.clientiToolStripMenuItem.Size = new System.Drawing.Size(65, 24);
+            this.clientiToolStripMenuItem.Size = new System.Drawing.Size(65, 26);
             this.clientiToolStripMenuItem.Text = "Clienti";
             this.clientiToolStripMenuItem.Click += new System.EventHandler(this.clientiToolStripMenuItem_Click);
             // 
+            // salvareToolStripMenuItem
+            // 
+            this.salvareToolStripMenuItem.Name = "salvareToolStripMenuItem";
+            this.salvareToolStripMenuItem.Size = new System.Drawing.Size(71, 26);
+            this.salvareToolStripMenuItem.Text = "Salvare";
+            this.salvareToolStripMenuItem.Click += new System.EventHandler(this.salvareToolStripMenuItem_Click);
+            // 
             // dgvAfisare
             // 
+            this.dgvAfisare.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvAfisare.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvAfisare.Location = new System.Drawing.Point(507, 32);
             this.dgvAfisare.Name = "dgvAfisare";
@@ -101,6 +113,7 @@
             this.dgvAfisare.RowTemplate.Height = 24;
             this.dgvAfisare.Size = new System.Drawing.Size(486, 248);
             this.dgvAfisare.TabIndex = 71;
+            this.dgvAfisare.SelectionChanged += new System.EventHandler(this.dgvAfisare_SelectionChanged);
             // 
             // lblInfo
             // 
@@ -379,5 +392,7 @@
         private System.Windows.Forms.Label lblAdresa;
         private System.Windows.Forms.Label lblPrenume;
         private System.Windows.Forms.Label lblNume;
+        private System.Windows.Forms.ToolStripMenuItem salvareToolStripMenuItem;
+        private System.Windows.Forms.SaveFileDialog saveFile;
     }
 }

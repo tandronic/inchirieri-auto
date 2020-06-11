@@ -1,9 +1,10 @@
-﻿using LibrarieModele;
+﻿// Andronic Tudor - 3121A
+
+using LibrarieModele;
 using System.Collections.Generic;
 
 namespace NivelAccesDate
 {
-    //definitia interfetei
     public interface IStocareDataMasini
     {
         void AddMasina(Masini m);

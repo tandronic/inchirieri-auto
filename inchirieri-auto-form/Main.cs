@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿// Andronic Tudor - 3121A
+
+using System;
 using System.Windows.Forms;
 
 namespace inchirieri_auto_form

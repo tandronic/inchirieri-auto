@@ -1,16 +1,13 @@
-﻿using System;
+﻿// Andronic Tudor - 3121A
+
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Collections;
 
 namespace LibrarieModele
 {
     public class Masini
     {
         private char SEPARATOR_SECUNDAR_OPTIUNI_FISIER = ';';
-        private const char SEPARATOR_FISIER = ',';
         private const char SEPARATOR_AFISARE = ' ';
 
         public int IdMasina { get; set; }
@@ -46,6 +43,7 @@ namespace LibrarieModele
 
         public string OptiuniToString
         {
+            // Convert a list of string items to a string
             get
             {
                 string sOptiuni = string.Empty;
@@ -90,6 +88,7 @@ namespace LibrarieModele
         public Masini(string linie)
         {
             string[] date = linie.Split(',');
+            // Check if string has all data for a car
             if(date.Length == NR_ATRIBUTE)
             {
                 IdMasina = Utils.IntConvert(date[0]);
@@ -111,13 +110,12 @@ namespace LibrarieModele
             
         }
 
-
         public string ConversieLaSir(char separator)
         {
             char old_separator = SEPARATOR_SECUNDAR_OPTIUNI_FISIER;
             if(separator == SEPARATOR_AFISARE)
                 SEPARATOR_SECUNDAR_OPTIUNI_FISIER = separator;
-            string response = string.Format("{1}{0}{2}{0}{3}{0}{4}{0}{5}{0}{6}{0}{7}{0}{8}{0}{9}{0}{10}{0}{11}\n",
+            string response = string.Format("{1}{0}{2}{0}{3}{0}{4}{0}{5}{0}{6}{0}{7}{0}{8}{0}{9}{0}{10}{0}{11}",
                 separator, IdMasina, Brend, Model, NumarInmatriculare, AnFabricatie, CapacitateMotor, 
                 Culoare, Combustibil, OptiuniToString, Utils.BoolToInchiriataConvert(Inchiriata), dataActualizare);
             SEPARATOR_SECUNDAR_OPTIUNI_FISIER = old_separator;

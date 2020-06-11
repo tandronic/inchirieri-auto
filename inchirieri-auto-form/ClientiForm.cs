@@ -1,14 +1,12 @@
-﻿using System;
+﻿// Andronic Tudor - 3121A
+
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using NivelAccesDate;
 using LibrarieModele;
+using System.IO;
 
 namespace inchirieri_auto_form
 {
@@ -17,6 +15,7 @@ namespace inchirieri_auto_form
         IStocareDataClienti adminClienti;
         IStocareDataMasini adminMasini;
         Color lblColor = Color.Black;
+        private const char DELIMITER = ' ';
         public ClientiForm()
         {
             InitializeComponent();
@@ -33,6 +32,7 @@ namespace inchirieri_auto_form
 
         private void AddNrMasini()
         {
+            // Get all cars number plate
             List<Masini> masini = new List<Masini>();
             masini = adminMasini.GetMasini();
             foreach (Masini m in masini)
@@ -62,12 +62,14 @@ namespace inchirieri_auto_form
 
         private void ResetareControale()
         {
+            // Reset all input fields
             txtNume.Text = txtPrenume.Text = txtAdresa.Text = txtNrTel.Text = txtCnp.Text = string.Empty;
             cmbNrMasina.Items.Clear();
         }
 
         private void SetLblColor()
         {
+            // Set BackColor for all labels
             lblNume.BackColor = lblColor;
             lblPrenume.BackColor = lblColor;
             lblAdresa.BackColor = lblColor;
@@ -80,6 +82,7 @@ namespace inchirieri_auto_form
 
         private bool validare()
         {
+            // Check if all fields are valid
             bool valid = true;
             if (validare_field(txtNume, lblNume) == false)
                 valid = false;
@@ -94,6 +97,7 @@ namespace inchirieri_auto_form
 
         private bool validare_field(TextBox txtbox, Label lbl)
         {
+            // Check if one field is valid
             if (txtbox.Text.Length == 0)
             {
                 lbl.BackColor = Color.Red;
@@ -121,9 +125,11 @@ namespace inchirieri_auto_form
         private void btnAdauga_Click(object sender, EventArgs e)
         {
             lblInfo.Visible = false;
+            // Set default BackColor for all labels
             SetLblColor();
             if (validare())
             {
+                // Add a new client if the data is valid
                 Clienti client = new Clienti();
                 client.Nume = txtNume.Text;
                 client.Prenume = txtPrenume.Text;
@@ -133,15 +139,18 @@ namespace inchirieri_auto_form
                 client.NrMasinaInc = cmbNrMasina.Text;
                 client.dataInchiriere = dtpStartInc.Value;
                 client.dataSfarsitInc = dtpSfarsitInc.Value;
+                // Add a new client in the file
                 adminClienti.AddClient(client);
                 lblInfo.Text = "Clientul a fost adaugat";
                 lblInfo.Visible = true;
+                // Reset all input text
                 ResetareControale();
             }
         }
 
         private void btnAfiseaza_Click(object sender, EventArgs e)
         {
+            // Display all the clients
             lblInfo.Visible = false;
             dgvAfisare.DataSource = null;
             List<Clienti> clienti = adminClienti.GetClienti();
@@ -150,6 +159,7 @@ namespace inchirieri_auto_form
 
         private void btnCauta_Click(object sender, EventArgs e)
         {
+            // Search for a client
             lblInfo.Visible = false;
             Clienti c = adminClienti.GetClient(txtCnp.Text);
             if (c == null)
@@ -159,6 +169,7 @@ namespace inchirieri_auto_form
             }
             else
             {
+                // Set client data to all imput fields
                 FileToFormData(c);
                 if (txtCnp.Enabled == true)
                     txtCnp.Enabled = false;
@@ -169,6 +180,7 @@ namespace inchirieri_auto_form
 
         private void FileToFormData(Clienti c)
         {
+            // Set client data to all imput fields
             txtNume.Text = c.Nume;
             txtPrenume.Text = c.Prenume;
             txtAdresa.Text = c.Adresa;
@@ -181,6 +193,7 @@ namespace inchirieri_auto_form
 
         private void btnModifica_Click(object sender, EventArgs e)
         {
+            // Update client data
             lblInfo.Visible = false;
             if (txtCnp.Text.Length == 0)
             {
@@ -228,15 +241,54 @@ namespace inchirieri_auto_form
 
         private void btnFiltreaza_Click(object sender, EventArgs e)
         {
+            // Filter clients
             List<Clienti> clienti = adminClienti.GetClienti();
             List<Clienti> clientiFiltrati = new List<Clienti>();
-            DateTime startDate = dtpStartInc.Value;
-            DateTime endDate = dtpSfarsitInc.Value;
+            DateTime startDate = dtpStartInc.Value.Date;
+            DateTime endDate = dtpSfarsitInc.Value.Date;
             foreach (Clienti c in clienti)
-                if (c.dataInchiriere == startDate && c.dataSfarsitInc == endDate)
+                if (c.dataInchiriere.Date == startDate && c.dataSfarsitInc.Date == endDate)
                     clientiFiltrati.Add(c);
             dgvAfisare.DataSource = null;
             dgvAfisare.DataSource = clientiFiltrati;
+        }
+
+        private void salvareToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            lblInfo.Visible = false;
+            saveFile.ShowDialog();
+            string numeFisier = saveFile.FileName;
+            bool succes = SalvareClienti(numeFisier);
+            if (succes)
+                lblInfo.Text = "Fisierul a fost scris";
+            else
+                lblInfo.Text = "Scrierea in fisier nu a fost realizata";
+            lblInfo.Visible = true;
+        }
+
+        private bool SalvareClienti(string numeFisier)
+        {
+            // Save clients data to a specific text file
+            bool succes = false;
+            List<Clienti> salvareClienti = adminClienti.GetClienti();
+            try
+            {
+                using (StreamWriter swFisierText = new StreamWriter(numeFisier, true))
+                {
+                    foreach (Clienti c in salvareClienti)
+                        swFisierText.WriteLine(c.ConversieLaSir(DELIMITER));
+                }
+                succes = true;
+            }
+            catch (IOException eIO)
+            {
+                throw new Exception("Eroare la deschiderea fisierului. Mesaj: " + eIO.Message);
+            }
+            catch (Exception eGen)
+            {
+                throw new Exception("Eroare generica. Mesaj: " + eGen.Message);
+            }
+            return succes;
         }
     }
 }

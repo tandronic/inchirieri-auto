@@ -1,11 +1,9 @@
-﻿using System;
+﻿// Andronic Tudor - 3121A
+
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 using System.Windows.Forms;
 using LibrarieModele;
 using NivelAccesDate;
@@ -16,6 +14,7 @@ namespace inchirieri_auto_form
     {
         IStocareDataAngajati adminAngajati;
         Color lblColor = Color.Black;
+        private const char DELIMITER = ' ';
         public AngajatiForm()
         {
             InitializeComponent();
@@ -54,12 +53,15 @@ namespace inchirieri_auto_form
 
         private void ResetareControale()
         {
+            // Reset all input
+            txtCnp.Enabled = true;
             txtNume.Text = txtPrenume.Text = txtAdresa.Text = txtNrTel.Text = txtCnp.Text = string.Empty;
-            cmbFunctie.Items.Clear();
+            cmbFunctie.SelectedItem = null;
         }
 
         private void SetLblColor()
         {
+            // Set BackColor for all labels
             lblNume.BackColor = lblColor;
             lblPrenume.BackColor = lblColor;
             lblAdresa.BackColor = lblColor;
@@ -71,6 +73,7 @@ namespace inchirieri_auto_form
 
         private bool validare()
         {
+            // Check if all fields are valid
             bool valid = true;
             if (validare_field(txtNume, lblNume) == false)
                 valid = false;
@@ -85,6 +88,7 @@ namespace inchirieri_auto_form
 
         private bool validare_field(TextBox txtbox, Label lbl)
         {
+            // Check if one field is valid
             if (txtbox.Text.Length == 0)
             {
                 lbl.BackColor = Color.Red;
@@ -112,9 +116,11 @@ namespace inchirieri_auto_form
         private void btnAdauga_Click(object sender, EventArgs e)
         {
             lblInfo.Visible = false;
+            // Set default BackColor for all labels
             SetLblColor();
             if (validare())
             {
+                // Add a new employee if the data is valid
                 Angajati angajat = new Angajati();
                 angajat.Nume = txtNume.Text;
                 angajat.Prenume = txtPrenume.Text;
@@ -123,15 +129,19 @@ namespace inchirieri_auto_form
                 angajat.Cnp = txtCnp.Text;
                 angajat.Functie = Utils.FunctieConvert(cmbFunctie.Text);
                 angajat.DataAngajare = dtpAngajare.Value;
+                // Add a new employee in the file
                 adminAngajati.AddAngajat(angajat);
                 lblInfo.Text = "Angajatul a fost adaugat";
                 lblInfo.Visible = true;
+                // Reset all input text
                 ResetareControale();
             }
         }
 
         private void btnAfiseaza_Click(object sender, EventArgs e)
         {
+            // Display all the employees
+            ResetareControale();
             lblInfo.Visible = false;
             dgvAfisare.DataSource = null;
             List<Angajati> angajati = adminAngajati.GetAngajati();
@@ -140,6 +150,7 @@ namespace inchirieri_auto_form
 
         private void btnCauta_Click(object sender, EventArgs e)
         {
+            // Search for a employee
             lblInfo.Visible = false;
             Angajati a = adminAngajati.GetAngajat(txtCnp.Text);
             if (a == null)
@@ -149,16 +160,17 @@ namespace inchirieri_auto_form
             }
             else
             {
+                // Set employee data to all imput fields
                 FileToFormData(a);
-                if (txtCnp.Enabled == true)
-                    txtCnp.Enabled = false;
-                else
-                    txtCnp.Enabled = true;
+                lblInfo.Text = "Angajatul a fost gasit";
+                lblInfo.Visible = true;
             }
         }
 
         private void FileToFormData(Angajati a)
         {
+            // Set employee data to all imput fields
+            txtCnp.Enabled = false;
             txtNume.Text = a.Nume;
             txtPrenume.Text = a.Prenume;
             txtAdresa.Text = a.Adresa;
@@ -170,6 +182,7 @@ namespace inchirieri_auto_form
 
         private void btnModifica_Click(object sender, EventArgs e)
         {
+            // Update employee data
             lblInfo.Visible = false;
             if (txtCnp.Text.Length == 0)
             {
@@ -198,20 +211,72 @@ namespace inchirieri_auto_form
                     adminAngajati.UpdateAngajat(angajat);
                     lblInfo.Text = "Datele angajatului au fost modificate";
                     lblInfo.Visible = true;
+                    ResetareControale();
                 }
             }
         }
 
         private void btnFiltreaza_Click(object sender, EventArgs e)
         {
+            // Filter employees
             List<Angajati> angajati = adminAngajati.GetAngajati();
             List<Angajati> angajatiFiltrati = new List<Angajati>();
             DateTime dataAngajare = dtpAngajare.Value;
             foreach (Angajati a in angajati)
-                if (a.DataAngajare == dataAngajare)
+                if (a.DataAngajare.Date == dataAngajare.Date)
                     angajatiFiltrati.Add(a);
             dgvAfisare.DataSource = null;
             dgvAfisare.DataSource = angajatiFiltrati;
+        }
+
+        private void salvareToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            lblInfo.Visible = false;
+            saveFile.ShowDialog();
+            string numeFisier = saveFile.FileName;
+            bool succes = SalvareAngajati(numeFisier);
+            if (succes)
+                lblInfo.Text = "Fisierul a fost scris";
+            else
+                lblInfo.Text = "Scrierea in fisier nu a fost realizata";
+            lblInfo.Visible = true;
+        }
+
+        private bool SalvareAngajati(string numeFisier)
+        {
+            // Save employees data to a specific text file
+            bool succes = false;
+            List<Angajati> salvareAngajati = adminAngajati.GetAngajati();
+            try
+            {
+                using (StreamWriter swFisierText = new StreamWriter(numeFisier, true))
+                {
+                    foreach (Angajati a in salvareAngajati)
+                        swFisierText.WriteLine(a.ConversieLaSir(DELIMITER));
+                }
+                succes = true;
+            }
+            catch (IOException eIO)
+            {
+                throw new Exception("Eroare la deschiderea fisierului. Mesaj: " + eIO.Message);
+            }
+            catch (Exception eGen)
+            {
+                throw new Exception("Eroare generica. Mesaj: " + eGen.Message);
+            }
+            return succes;
+        }
+
+        private void dgvAfisare_SelectionChanged(object sender, EventArgs e)
+        {
+            if (dgvAfisare.SelectedRows.Count == 1)
+            {
+                int selectedrowindex = dgvAfisare.SelectedCells[0].RowIndex;
+                DataGridViewRow selectedRow = dgvAfisare.Rows[selectedrowindex];
+                string cnp = Convert.ToString(selectedRow.Cells["cnp"].Value);
+                Angajati a = adminAngajati.GetAngajat(cnp);
+                FileToFormData(a);
+            }
         }
     }
 }
