@@ -45,7 +45,7 @@ namespace NivelAccesDate
                 cn.Execute(string.Format("update Masina set Brend='{0}', Model='{1}', NumarInmatriculare='{2}', AnFabricatie='{3}', " +
                     "CapacitateMotor='{4}', Culoare='{5}', Combustibil='{6}', OptiuniString='{7}', Inchiriata='{8}', dataActualizare='{9}' where IdMasina={10}", masina.Brend, masina.Model,
                     masina.NumarInmatriculare, masina.AnFabricatie, masina.CapacitateMotor, masina.Culoare, masina.Combustibil, masina.OptiuniToString, 
-                    masina.Inchiriata, masina.dataActualizare.ToString(), masina.IdMasina));
+                    masina.Inchiriata, masina.dataActualizare.ToString("MM/dd/yyyy hh:mm tt"), masina.IdMasina));
             }
         }
 

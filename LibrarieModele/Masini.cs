@@ -127,7 +127,7 @@ namespace LibrarieModele
         {
             return string.Format("('{1}'{0}'{2}'{0}'{3}'{0}'{4}'{0}'{5}'{0}'{6}'{0}'{7}'{0}'{8}'{0}'{9}'{0}'{10}')",
                 ',', Brend, Model, NumarInmatriculare, AnFabricatie, CapacitateMotor,
-                Culoare, Combustibil, OptiuniToString, Inchiriata, dataActualizare.ToString());
+                Culoare, Combustibil, OptiuniToString, Inchiriata, dataActualizare.ToString("MM/dd/yyyy hh:mm tt"));
         }
 
         public bool Compare(Masini masina)

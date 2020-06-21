@@ -81,13 +81,13 @@ namespace LibrarieModele
         public string ConversieLaSir(char delimiter)
         {
             return string.Format("{1}{0}{2}{0}{3}{0}{4}", 
-               delimiter, IdAngajat, Data(delimiter), Functie, DataAngajare);
+               delimiter, IdAngajat, Data(delimiter), Functie, DataAngajare.ToString("MM/dd/yyyy hh:mm tt"));
         }
 
         public string ConversieDB()
         {
-            return string.Format("({1}{0}'{2}'{0}'{3}')",
-                ',', DataDB(), Functie, DataAngajare);
+            return string.Format("{1}{0}'{2}'{0}'{3}'",
+                ',', DataDB(), Functie, DataAngajare.ToString("MM/dd/yyyy hh:mm tt"));
         }
     }
 

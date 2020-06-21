@@ -113,32 +113,6 @@ namespace inchirieri_auto_form
             return true;
         }
 
-        private void btnAdauga_Click(object sender, EventArgs e)
-        {
-            lblInfo.Visible = false;
-            txtCnp.Enabled = true;
-            // Set default BackColor for all labels
-            SetLblColor();
-            if (validare())
-            {
-                // Add a new employee if the data is valid
-                Angajati angajat = new Angajati();
-                angajat.Nume = txtNume.Text;
-                angajat.Prenume = txtPrenume.Text;
-                angajat.NumarTelefon = txtNrTel.Text;
-                angajat.Adresa = txtAdresa.Text;
-                angajat.Cnp = txtCnp.Text;
-                angajat.Functie = Utils.FunctieConvert(cmbFunctie.Text);
-                angajat.DataAngajare = dtpAngajare.Value;
-                // Add a new employee in the file
-                SqliteConnectAngajati.SaveAngajat(angajat);
-                lblInfo.Text = "Angajatul a fost adaugat";
-                lblInfo.Visible = true;
-                // Reset all input text
-                ResetareControale();
-            }
-        }
-
         private void afisare_date()
         {
             // Display all the employees

@@ -55,7 +55,6 @@
             this.lblPassword.Size = new System.Drawing.Size(57, 18);
             this.lblPassword.TabIndex = 9;
             this.lblPassword.Text = "Parola";
-            this.lblPassword.Click += new System.EventHandler(this.lblPassword_Click);
             // 
             // txtPassword1
             // 
@@ -65,7 +64,6 @@
             this.txtPassword1.Size = new System.Drawing.Size(169, 20);
             this.txtPassword1.TabIndex = 8;
             this.txtPassword1.UseSystemPasswordChar = true;
-            this.txtPassword1.TextChanged += new System.EventHandler(this.txtPassword1_TextChanged);
             // 
             // lblUsername
             // 
@@ -78,7 +76,6 @@
             this.lblUsername.Size = new System.Drawing.Size(76, 18);
             this.lblUsername.TabIndex = 7;
             this.lblUsername.Text = "Utilizator";
-            this.lblUsername.Click += new System.EventHandler(this.lblUsername_Click);
             // 
             // txtUsername
             // 
@@ -87,7 +84,6 @@
             this.txtUsername.Name = "txtUsername";
             this.txtUsername.Size = new System.Drawing.Size(169, 20);
             this.txtUsername.TabIndex = 6;
-            this.txtUsername.TextChanged += new System.EventHandler(this.txtUsername_TextChanged);
             // 
             // lblPassword2
             // 
@@ -100,7 +96,6 @@
             this.lblPassword2.Size = new System.Drawing.Size(146, 18);
             this.lblPassword2.TabIndex = 13;
             this.lblPassword2.Text = "Confirmare Parola";
-            this.lblPassword2.Click += new System.EventHandler(this.lblPassword2_Click);
             // 
             // txtPassword2
             // 
@@ -110,7 +105,6 @@
             this.txtPassword2.Size = new System.Drawing.Size(169, 20);
             this.txtPassword2.TabIndex = 12;
             this.txtPassword2.UseSystemPasswordChar = true;
-            this.txtPassword2.TextChanged += new System.EventHandler(this.txtPassword2_TextChanged);
             // 
             // lblUserType
             // 
@@ -123,7 +117,6 @@
             this.lblUserType.Size = new System.Drawing.Size(101, 18);
             this.lblUserType.TabIndex = 14;
             this.lblUserType.Text = "Tip utilizator";
-            this.lblUserType.Click += new System.EventHandler(this.lblUserType_Click);
             // 
             // rdbAngajat
             // 
@@ -135,7 +128,6 @@
             this.rdbAngajat.TabStop = true;
             this.rdbAngajat.Text = "Angajat";
             this.rdbAngajat.UseVisualStyleBackColor = true;
-            this.rdbAngajat.CheckedChanged += new System.EventHandler(this.rdbAngajat_CheckedChanged);
             // 
             // rdbClient
             // 
@@ -147,7 +139,6 @@
             this.rdbClient.TabStop = true;
             this.rdbClient.Text = "Client";
             this.rdbClient.UseVisualStyleBackColor = true;
-            this.rdbClient.CheckedChanged += new System.EventHandler(this.rdbClient_CheckedChanged);
             // 
             // btnRegister
             // 
@@ -185,7 +176,6 @@
             this.lblInfo.TabIndex = 19;
             this.lblInfo.Text = "Info";
             this.lblInfo.Visible = false;
-            this.lblInfo.Click += new System.EventHandler(this.lblInfo_Click);
             // 
             // rdbAdmin
             // 

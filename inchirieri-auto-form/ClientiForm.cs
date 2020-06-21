@@ -115,11 +115,13 @@ namespace inchirieri_auto_form
                 client.Adresa = txtAdresa.Text;
                 client.Cnp = txtCnp.Text;
                 // Add a new client in the file
-                SqliteConnectClienti.SaveClient(client, LogInUser.IdUser);
+                SqliteConnectClienti.UpdateClient(client);
                 lblInfo.Text = "Clientul a fost adaugat";
                 lblInfo.Visible = true;
                 // Reset all input text
                 ResetareControale();
+                List<Clienti> clienti = SqliteConnectClienti.LoadClienti();
+                dgvAfisare.DataSource = clienti;
             }
         }
 
@@ -127,7 +129,6 @@ namespace inchirieri_auto_form
         {
             // Display all the clients
             lblInfo.Visible = false;
-            dgvAfisare.DataSource = null;
             List<Clienti> clienti = SqliteConnectClienti.LoadClienti();
             dgvAfisare.DataSource = clienti;
         }

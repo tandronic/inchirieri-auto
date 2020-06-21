@@ -21,7 +21,7 @@ namespace LibrarieModele
         public string ConversieDB()
         {
             return string.Format("('{1}'{0}'{2}'{0}'{3}'{0}'{4}')",
-                ',', Username, Password, Type, dataActualizare);
+                ',', Username, Password, Type, dataActualizare.ToString("MM/dd/yyyy hh:mm tt"));
         }
     }
 }

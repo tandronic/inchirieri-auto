@@ -121,58 +121,20 @@ namespace inchirieri_auto_form
                 user.dataActualizare = DateTime.Now;
                 // Add a new user in the database
                 SqliteConnectUseri.SaveUser(user);
+                if(user.Type == UserType.Client)
+                {
+                    Clienti c = new Clienti();
+                    user = SqliteConnectUseri.SearchUser(user.Username);
+                    SqliteConnectClienti.SaveClient(c, user.IdUser);
+                }
+                if(user.Type == UserType.Angajat)
+                {
+                    Angajati a = new Angajati();
+                    user = SqliteConnectUseri.SearchUser(user.Username);
+                    SqliteConnectAngajati.SaveAngajat(a, user.IdUser);
+                }
                 LoginRedirect();
             }
-
-        }
-
-        private void txtPassword1_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void lblUsername_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtUsername_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void lblPassword2_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtPassword2_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void lblUserType_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void rdbAngajat_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void rdbClient_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void lblPassword_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void lblInfo_Click(object sender, EventArgs e)
-        {
 
         }
     }

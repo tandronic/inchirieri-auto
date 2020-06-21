@@ -48,7 +48,7 @@ namespace NivelAccesDate
             using (SQLiteConnection cn = new SQLiteConnection(LoadConnectionString()))
             {
                 cn.Execute(string.Format("update User set Username='{0}', Password='{1}', dataActualizare='{2}' where IdUser={3};", 
-                    u.Username, u.Password, u.dataActualizare, u.IdUser));
+                    u.Username, u.Password, u.dataActualizare.ToString("MM/dd/yyyy hh:mm tt"), u.IdUser));
             }
         }
 

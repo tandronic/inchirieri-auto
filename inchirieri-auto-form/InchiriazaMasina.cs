@@ -173,8 +173,8 @@ namespace inchirieri_auto_form
             {
                 masina.Inchiriata = true;
                 SqliteConnectMasini.UpdateMasina(masina);
-                SqliteConnectClientiMasini.SaveData(LogInUser.IdUser, masina.IdMasina, dtpStartDate.Value.Date.ToString(), 
-                    dtpEndDate.Value.Date.ToString());
+                SqliteConnectClientiMasini.SaveData(LogInUser.IdUser, masina.IdMasina, dtpStartDate.Value.Date.ToString("MM/dd/yyyy"), 
+                    dtpEndDate.Value.Date.ToString("MM/dd/yyyy"));
                 MasiniDinsponibile = SqliteConnectMasini.GetMasiniDisponibile();
                 dgvAfisare.DataSource = MasiniDinsponibile;
                 ResetareControale();

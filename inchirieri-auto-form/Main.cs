@@ -29,6 +29,12 @@ namespace inchirieri_auto_form
                 btnCont.Location = new System.Drawing.Point(263, 231);
                 btnLogOut.Location = new System.Drawing.Point(263, 298);
             }
+            else
+            {
+                btnProfil.Visible = false;
+                btnCont.Location = new System.Drawing.Point(263, 231);
+                btnLogOut.Location = new System.Drawing.Point(263, 298);
+            }
         }
 
         private void btnMasini_Click(object sender, EventArgs e)

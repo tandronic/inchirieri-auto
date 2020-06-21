@@ -18,17 +18,22 @@ namespace inchirieri_auto_form
     {
         Useri LogInUser;
         Color lblColor = Color.Black;
-        Clienti client;
-        bool actualizare = true;
+        Clienti client=null;
+        Angajati angajat=null;
         public Profil(Useri user)
         {
             LogInUser = user;
             InitializeComponent();
-            client = SqliteConnectClienti.SearchClientByUserId(LogInUser.IdUser);
-            if (client != null)
-                FileToFormData(client);
-            else
-                actualizare = false;
+            if(LogInUser.Type == UserType.Client)
+            {
+                client = SqliteConnectClienti.SearchClientByUserId(LogInUser.IdUser);
+                FileToFormClientData(client);
+            }
+            if(LogInUser.Type == UserType.Angajat)
+            {
+                angajat = SqliteConnectAngajati.SearchAngajatByUserId(LogInUser.IdUser);
+                FileToFormAngajatData(angajat);
+            }
         }
 
         private void SetLblColor()
@@ -55,15 +60,28 @@ namespace inchirieri_auto_form
                 valid = false;
             return valid;
         }
-        private void FileToFormData(Clienti c)
+        private void FileToFormClientData(Clienti c)
         {
             // Set client data to all imput fields
-            txtCnp.Enabled = false;
+            if(c.Cnp.Length != 0)
+                txtCnp.Enabled = false;
             txtNume.Text = c.Nume;
             txtPrenume.Text = c.Prenume;
             txtAdresa.Text = c.Adresa;
             txtCnp.Text = c.Cnp;
             txtNrTel.Text = c.NumarTelefon;
+        }
+
+        private void FileToFormAngajatData(Angajati a)
+        {
+            // Set client data to all imput fields
+            if(a.Cnp.Length != 0)
+                txtCnp.Enabled = false;
+            txtNume.Text = a.Nume;
+            txtPrenume.Text = a.Prenume;
+            txtAdresa.Text = a.Adresa;
+            txtCnp.Text = a.Cnp;
+            txtNrTel.Text = a.NumarTelefon;
         }
 
         private bool validare_field(TextBox txtbox, Label lbl)
@@ -96,25 +114,32 @@ namespace inchirieri_auto_form
         private void btnActualizare_Click(object sender, EventArgs e)
         {
             lblInfo.Visible = false;
-            if(!actualizare)
+            if((client != null && client.Cnp.Length == 0) || (angajat != null && angajat.Cnp.Length == 0))
                 txtCnp.Enabled = true;
             // Set default BackColor for all labels
             SetLblColor();
             if (validare())
             {
                 // Add a new client if the data is valid
-                if(!actualizare)
-                    client = new Clienti();
-                client.Nume = txtNume.Text;
-                client.Prenume = txtPrenume.Text;
-                client.NumarTelefon = txtNrTel.Text;
-                client.Adresa = txtAdresa.Text;
-                client.Cnp = txtCnp.Text;
-                if (actualizare)
+                if(LogInUser.Type == UserType.Client)
+                {
+                    client.Nume = txtNume.Text;
+                    client.Prenume = txtPrenume.Text;
+                    client.NumarTelefon = txtNrTel.Text;
+                    client.Adresa = txtAdresa.Text;
+                    client.Cnp = txtCnp.Text;
                     SqliteConnectClienti.UpdateClient(client);
+                }
                 else
-                    SqliteConnectClienti.SaveClient(client, LogInUser.IdUser);
-                actualizare = true;
+                {
+                    angajat.Nume = txtNume.Text;
+                    angajat.Prenume = txtPrenume.Text;
+                    angajat.NumarTelefon = txtNrTel.Text;
+                    angajat.Adresa = txtAdresa.Text;
+                    angajat.Cnp = txtCnp.Text;
+                    SqliteConnectAngajati.UpdateAngajat(angajat);
+                }
+                
                 lblInfo.Text = "Datele au fost actualizate";
                 lblInfo.Visible = true;
             }
