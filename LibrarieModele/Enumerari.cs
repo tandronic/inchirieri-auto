@@ -42,4 +42,12 @@ namespace LibrarieModele
         Mecanic = 3,
         FemeieServiciu = 4
     };
+
+    public enum UserType
+    {
+        UserInvalid = 0,
+        Client = 1,
+        Angajat = 2,
+        Admin = 3
+    }
 }

@@ -116,5 +116,13 @@ namespace LibrarieModele
                 return functie;
             return Functie.FunctieInvalid;
         }
+
+        public static bool PasswordValidate(string value)
+        {
+            Regex regex = new Regex("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,15}");
+            if (regex.IsMatch(value))
+                return true;
+            return false;
+        }
     }
 }

@@ -18,6 +18,12 @@ namespace LibrarieModele
                 delimiter, Nume, Prenume, Adresa, NumarTelefon, Cnp);
         }
 
+        public string DataDB()
+        {
+            return string.Format("'{1}'{0}'{2}'{0}'{3}'{0}'{4}'{0}'{5}'",
+                ',', Nume, Prenume, Adresa, NumarTelefon, Cnp);
+        }
+
         public bool Compare(Persoane persoana)
         {
             if (Cnp == persoana.Cnp)
@@ -77,27 +83,28 @@ namespace LibrarieModele
             return string.Format("{1}{0}{2}{0}{3}{0}{4}", 
                delimiter, IdAngajat, Data(delimiter), Functie, DataAngajare);
         }
+
+        public string ConversieDB()
+        {
+            return string.Format("({1}{0}'{2}'{0}'{3}')",
+                ',', DataDB(), Functie, DataAngajare);
+        }
     }
 
     public class Clienti: Persoane
     {
         public int IdClient { get; set; }
-        public string NrMasinaInc { get; set; }
-        
-        public DateTime dataInchiriere { get; set; }
 
-        public DateTime dataSfarsitInc { get; set; }
-
-        private int NR_ATRIBUTE = 9;
+        private int NR_ATRIBUTE = 6;
 
         public Clienti()
         {
             IdClient = 0;
-            Nume = Prenume = Adresa = NumarTelefon = Cnp = NrMasinaInc = string.Empty;
+            Nume = Prenume = Adresa = NumarTelefon = Cnp = string.Empty;
         }
 
         public Clienti(int _id, string _nume, string _prenume, string _adresa, string _numarTelefon,
-            string _cnp, string _NrMasinaInc, DateTime _dataInchiriere, DateTime _dataSfarsitInc)
+            string _cnp)
         {
             IdClient = _id;
             Nume = _nume;
@@ -106,9 +113,6 @@ namespace LibrarieModele
             NumarTelefon = _numarTelefon;
             Cnp = _cnp;
 
-            NrMasinaInc = _NrMasinaInc;
-            dataInchiriere = _dataInchiriere;
-            dataSfarsitInc = _dataSfarsitInc;
         }
 
         public Clienti(string linie)
@@ -128,16 +132,18 @@ namespace LibrarieModele
                     Cnp = date[5];
                 else
                     Cnp = "";
-                NrMasinaInc = date[6];
-                dataInchiriere = System.Convert.ToDateTime(date[7]);
-                dataSfarsitInc = System.Convert.ToDateTime(date[8]);
             }
         }
 
         public string ConversieLaSir(char delimiter)
         {
-            return string.Format("{1}{0}{2}{0}{3}{0}{4}{0}{5}",
-                delimiter, IdClient, Data(delimiter), NrMasinaInc, dataInchiriere, dataSfarsitInc);
+            return string.Format("{1}{0}{2}",
+                delimiter, IdClient, Data(delimiter));
+        }
+
+        public string ConversieDB()
+        {
+            return DataDB();
         }
     }
 }

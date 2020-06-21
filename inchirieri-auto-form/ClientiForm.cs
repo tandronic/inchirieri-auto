@@ -12,59 +12,39 @@ namespace inchirieri_auto_form
 {
     public partial class ClientiForm : Form
     {
-        IStocareDataClienti adminClienti;
-        IStocareDataMasini adminMasini;
         Color lblColor = Color.Black;
         private const char DELIMITER = ' ';
-        public ClientiForm()
+        Useri LogInUser;
+        public ClientiForm(Useri user)
         {
-            InitializeComponent();
-            adminClienti = StocareFactory.GetAdministratorStocareClienti();
-            adminMasini = StocareFactory.GetAdministratorStocareMasini();
-            AddNrMasini();
+            LogInUser = user;
+            InitializeComponent();  
         }
 
         private void Clienti_FormClosed(object sender, FormClosedEventArgs e)
         {
             Environment.Exit(1);
-
-        }
-
-        private void AddNrMasini()
-        {
-            // Get all cars number plate
-            List<Masini> masini = new List<Masini>();
-            masini = adminMasini.GetMasini();
-            foreach (Masini m in masini)
-                cmbNrMasina.Items.Add(m.NumarInmatriculare);
         }
 
         private void meniuPrincipalToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Hide();
-            Main mainForm = new Main();
+            Main mainForm = new Main(LogInUser);
             mainForm.Show();
         }
 
         private void masiniToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Hide();
-            MasiniForm masiniForm = new MasiniForm();
+            MasiniForm masiniForm = new MasiniForm(LogInUser);
             masiniForm.Show();
-        }
-
-        private void angajatiToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            this.Hide();
-            AngajatiForm angajatiForm = new AngajatiForm();
-            angajatiForm.Show();
         }
 
         private void ResetareControale()
         {
             // Reset all input fields
             txtNume.Text = txtPrenume.Text = txtAdresa.Text = txtNrTel.Text = txtCnp.Text = string.Empty;
-            cmbNrMasina.Items.Clear();
+            txtCnp.Enabled = true;
         }
 
         private void SetLblColor()
@@ -75,9 +55,6 @@ namespace inchirieri_auto_form
             lblAdresa.BackColor = lblColor;
             lblNrTel.BackColor = lblColor;
             lblCnp.BackColor = lblColor;
-            lblNumarMasina.BackColor = lblColor;
-            lblDataInchiriere.BackColor = lblColor;
-            lblDataSfarsitInc.BackColor = lblColor;
         }
 
         private bool validare()
@@ -122,9 +99,10 @@ namespace inchirieri_auto_form
             return true;
         }
 
-        private void btnAdauga_Click(object sender, EventArgs e)
+        private void btnActualizare_Click(object sender, EventArgs e)
         {
             lblInfo.Visible = false;
+            txtCnp.Enabled = true;
             // Set default BackColor for all labels
             SetLblColor();
             if (validare())
@@ -136,11 +114,8 @@ namespace inchirieri_auto_form
                 client.NumarTelefon = txtNrTel.Text;
                 client.Adresa = txtAdresa.Text;
                 client.Cnp = txtCnp.Text;
-                client.NrMasinaInc = cmbNrMasina.Text;
-                client.dataInchiriere = dtpStartInc.Value;
-                client.dataSfarsitInc = dtpSfarsitInc.Value;
                 // Add a new client in the file
-                adminClienti.AddClient(client);
+                SqliteConnectClienti.SaveClient(client, LogInUser.IdUser);
                 lblInfo.Text = "Clientul a fost adaugat";
                 lblInfo.Visible = true;
                 // Reset all input text
@@ -148,20 +123,26 @@ namespace inchirieri_auto_form
             }
         }
 
-        private void btnAfiseaza_Click(object sender, EventArgs e)
+        private void afisare_date()
         {
             // Display all the clients
             lblInfo.Visible = false;
             dgvAfisare.DataSource = null;
-            List<Clienti> clienti = adminClienti.GetClienti();
+            List<Clienti> clienti = SqliteConnectClienti.LoadClienti();
             dgvAfisare.DataSource = clienti;
+        }
+
+        private void btnAfiseaza_Click(object sender, EventArgs e)
+        {
+            afisare_date();
         }
 
         private void btnCauta_Click(object sender, EventArgs e)
         {
             // Search for a client
             lblInfo.Visible = false;
-            Clienti c = adminClienti.GetClient(txtCnp.Text);
+            txtCnp.Enabled = true;
+            Clienti c = SqliteConnectClienti.SearchClientByCnp(txtCnp.Text);
             if (c == null)
             {
                 lblInfo.Text = "Nu exista nici un client cu acest CNP";
@@ -171,24 +152,20 @@ namespace inchirieri_auto_form
             {
                 // Set client data to all imput fields
                 FileToFormData(c);
-                if (txtCnp.Enabled == true)
-                    txtCnp.Enabled = false;
-                else
-                    txtCnp.Enabled = true;
+                lblInfo.Text = "Clientul a fost gasit";
+                lblInfo.Visible = true;
             }
         }
 
         private void FileToFormData(Clienti c)
         {
             // Set client data to all imput fields
+            txtCnp.Enabled = false;
             txtNume.Text = c.Nume;
             txtPrenume.Text = c.Prenume;
             txtAdresa.Text = c.Adresa;
             txtCnp.Text = c.Cnp;
             txtNrTel.Text = c.NumarTelefon;
-            cmbNrMasina.SelectedItem = c.NrMasinaInc;
-            dtpStartInc.Value = c.dataInchiriere;
-            dtpSfarsitInc.Value = c.dataSfarsitInc;
         }
 
         private void btnModifica_Click(object sender, EventArgs e)
@@ -201,7 +178,7 @@ namespace inchirieri_auto_form
                 lblInfo.Visible = true;
                 return;
             }
-            Clienti c = adminClienti.GetClient(txtCnp.Text);
+            Clienti c = SqliteConnectClienti.SearchClientByCnp(txtCnp.Text);
             if (c == null)
             {
                 lblInfo.Text = "Nu exista nici un client cu acest CNP";
@@ -217,12 +194,11 @@ namespace inchirieri_auto_form
                     c.Adresa = txtAdresa.Text;
                     c.Cnp = txtCnp.Text;
                     c.NumarTelefon = txtNrTel.Text;
-                    c.NrMasinaInc = cmbNrMasina.Text;
-                    c.dataInchiriere = dtpStartInc.Value;
-                    c.dataSfarsitInc = dtpStartInc.Value;
-                    adminClienti.UpdateClient(c);
+                    SqliteConnectClienti.UpdateClient(c);
                     lblInfo.Text = "Datele clientului au fost modificate";
                     lblInfo.Visible = true;
+                    ResetareControale();
+                    afisare_date();
                 }
             }
         }
@@ -234,23 +210,10 @@ namespace inchirieri_auto_form
                 int selectedrowindex = dgvAfisare.SelectedCells[0].RowIndex;
                 DataGridViewRow selectedRow = dgvAfisare.Rows[selectedrowindex];
                 string cnp = Convert.ToString(selectedRow.Cells["cnp"].Value);
-                Clienti c = adminClienti.GetClient(cnp);
+                Clienti c = SqliteConnectClienti.SearchClientByCnp(cnp);
+
                 FileToFormData(c);
             }
-        }
-
-        private void btnFiltreaza_Click(object sender, EventArgs e)
-        {
-            // Filter clients
-            List<Clienti> clienti = adminClienti.GetClienti();
-            List<Clienti> clientiFiltrati = new List<Clienti>();
-            DateTime startDate = dtpStartInc.Value.Date;
-            DateTime endDate = dtpSfarsitInc.Value.Date;
-            foreach (Clienti c in clienti)
-                if (c.dataInchiriere.Date == startDate && c.dataSfarsitInc.Date == endDate)
-                    clientiFiltrati.Add(c);
-            dgvAfisare.DataSource = null;
-            dgvAfisare.DataSource = clientiFiltrati;
         }
 
         private void salvareToolStripMenuItem_Click(object sender, EventArgs e)
@@ -270,7 +233,7 @@ namespace inchirieri_auto_form
         {
             // Save clients data to a specific text file
             bool succes = false;
-            List<Clienti> salvareClienti = adminClienti.GetClienti();
+            List<Clienti> salvareClienti = SqliteConnectClienti.LoadClienti();
             try
             {
                 using (StreamWriter swFisierText = new StreamWriter(numeFisier, true))
@@ -289,6 +252,13 @@ namespace inchirieri_auto_form
                 throw new Exception("Eroare generica. Mesaj: " + eGen.Message);
             }
             return succes;
+        }
+
+        private void logOutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+            Login LoginForm = new Login();
+            LoginForm.Show();
         }
     }
 }

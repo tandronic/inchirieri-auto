@@ -40,6 +40,7 @@ namespace LibrarieModele
         public CuloareMasina Culoare { get; set; }
         public CombustibilMasina Combustibil { get; set; }
         public List<string> Optiuni { get; set; }
+        public string OptiuniString { get; set; }
 
         public string OptiuniToString
         {
@@ -115,11 +116,18 @@ namespace LibrarieModele
             char old_separator = SEPARATOR_SECUNDAR_OPTIUNI_FISIER;
             if(separator == SEPARATOR_AFISARE)
                 SEPARATOR_SECUNDAR_OPTIUNI_FISIER = separator;
-            string response = string.Format("{1}{0}{2}{0}{3}{0}{4}{0}{5}{0}{6}{0}{7}{0}{8}{0}{9}{0}{10}{0}{11}",
-                separator, IdMasina, Brend, Model, NumarInmatriculare, AnFabricatie, CapacitateMotor, 
+            string response = string.Format("{1}{0}{2}{0}{3}{0}{4}{0}{5}{0}{6}{0}{7}{0}{8}{0}{9}{0}{10}",
+                separator, Brend, Model, NumarInmatriculare, AnFabricatie, CapacitateMotor, 
                 Culoare, Combustibil, OptiuniToString, Utils.BoolToInchiriataConvert(Inchiriata), dataActualizare);
             SEPARATOR_SECUNDAR_OPTIUNI_FISIER = old_separator;
             return response;
+        }
+
+        public string ConversieLaDB()
+        {
+            return string.Format("('{1}'{0}'{2}'{0}'{3}'{0}'{4}'{0}'{5}'{0}'{6}'{0}'{7}'{0}'{8}'{0}'{9}'{0}'{10}')",
+                ',', Brend, Model, NumarInmatriculare, AnFabricatie, CapacitateMotor,
+                Culoare, Combustibil, OptiuniToString, Inchiriata, dataActualizare.ToString());
         }
 
         public bool Compare(Masini masina)

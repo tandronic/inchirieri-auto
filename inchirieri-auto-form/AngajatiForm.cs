@@ -12,13 +12,13 @@ namespace inchirieri_auto_form
 {
     public partial class AngajatiForm : Form
     {
-        IStocareDataAngajati adminAngajati;
         Color lblColor = Color.Black;
         private const char DELIMITER = ' ';
-        public AngajatiForm()
+        Useri LogInUser;
+        public AngajatiForm(Useri user)
         {
+            LogInUser = user;
             InitializeComponent();
-            adminAngajati = StocareFactory.GetAdministratorStocareAngajati();
             cmbFunctie.Items.Add(Functie.Director);
             cmbFunctie.Items.Add(Functie.Marketing);
             cmbFunctie.Items.Add(Functie.Mecanic);
@@ -33,21 +33,21 @@ namespace inchirieri_auto_form
         private void meniuPrincipalToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
             this.Hide();
-            Main mainMenu = new Main();
+            Main mainMenu = new Main(LogInUser);
             mainMenu.Show();
         }
 
         private void masiniToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
             this.Hide();
-            MasiniForm masiniForm = new MasiniForm();
+            MasiniForm masiniForm = new MasiniForm(LogInUser);
             masiniForm.Show();
         }
 
         private void clientiToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Hide();
-            ClientiForm clientiForm = new ClientiForm();
+            ClientiForm clientiForm = new ClientiForm(LogInUser);
             clientiForm.Show();
         }
 
@@ -116,6 +116,7 @@ namespace inchirieri_auto_form
         private void btnAdauga_Click(object sender, EventArgs e)
         {
             lblInfo.Visible = false;
+            txtCnp.Enabled = true;
             // Set default BackColor for all labels
             SetLblColor();
             if (validare())
@@ -130,7 +131,7 @@ namespace inchirieri_auto_form
                 angajat.Functie = Utils.FunctieConvert(cmbFunctie.Text);
                 angajat.DataAngajare = dtpAngajare.Value;
                 // Add a new employee in the file
-                adminAngajati.AddAngajat(angajat);
+                SqliteConnectAngajati.SaveAngajat(angajat);
                 lblInfo.Text = "Angajatul a fost adaugat";
                 lblInfo.Visible = true;
                 // Reset all input text
@@ -138,21 +139,27 @@ namespace inchirieri_auto_form
             }
         }
 
-        private void btnAfiseaza_Click(object sender, EventArgs e)
+        private void afisare_date()
         {
             // Display all the employees
             ResetareControale();
             lblInfo.Visible = false;
             dgvAfisare.DataSource = null;
-            List<Angajati> angajati = adminAngajati.GetAngajati();
+            List<Angajati> angajati = SqliteConnectAngajati.LoadAngajati();
             dgvAfisare.DataSource = angajati;
+        }
+
+        private void btnAfiseaza_Click(object sender, EventArgs e)
+        {
+            afisare_date();
         }
 
         private void btnCauta_Click(object sender, EventArgs e)
         {
             // Search for a employee
             lblInfo.Visible = false;
-            Angajati a = adminAngajati.GetAngajat(txtCnp.Text);
+            txtCnp.Enabled = true;
+            Angajati a = SqliteConnectAngajati.SearchAngajatByCnp(txtCnp.Text);
             if (a == null)
             {
                 lblInfo.Text = "Nu exista nici un angajat cu acest CNP";
@@ -190,7 +197,7 @@ namespace inchirieri_auto_form
                 lblInfo.Visible = true;
                 return;
             }
-            Angajati angajat = adminAngajati.GetAngajat(txtCnp.Text);
+            Angajati angajat = SqliteConnectAngajati.SearchAngajatByCnp(txtCnp.Text);
             if (angajat == null)
             {
                 lblInfo.Text = "Nu exista nici un angajat cu acest CNP";
@@ -208,10 +215,11 @@ namespace inchirieri_auto_form
                     angajat.Cnp = txtCnp.Text;
                     angajat.Functie = Utils.FunctieConvert(cmbFunctie.Text);
                     angajat.DataAngajare = dtpAngajare.Value;
-                    adminAngajati.UpdateAngajat(angajat);
+                    SqliteConnectAngajati.UpdateAngajat(angajat);
                     lblInfo.Text = "Datele angajatului au fost modificate";
                     lblInfo.Visible = true;
                     ResetareControale();
+                    afisare_date();
                 }
             }
         }
@@ -219,7 +227,7 @@ namespace inchirieri_auto_form
         private void btnFiltreaza_Click(object sender, EventArgs e)
         {
             // Filter employees
-            List<Angajati> angajati = adminAngajati.GetAngajati();
+            List<Angajati> angajati = SqliteConnectAngajati.LoadAngajati();
             List<Angajati> angajatiFiltrati = new List<Angajati>();
             DateTime dataAngajare = dtpAngajare.Value;
             foreach (Angajati a in angajati)
@@ -246,7 +254,7 @@ namespace inchirieri_auto_form
         {
             // Save employees data to a specific text file
             bool succes = false;
-            List<Angajati> salvareAngajati = adminAngajati.GetAngajati();
+            List<Angajati> salvareAngajati = SqliteConnectAngajati.LoadAngajati();
             try
             {
                 using (StreamWriter swFisierText = new StreamWriter(numeFisier, true))
@@ -274,9 +282,16 @@ namespace inchirieri_auto_form
                 int selectedrowindex = dgvAfisare.SelectedCells[0].RowIndex;
                 DataGridViewRow selectedRow = dgvAfisare.Rows[selectedrowindex];
                 string cnp = Convert.ToString(selectedRow.Cells["cnp"].Value);
-                Angajati a = adminAngajati.GetAngajat(cnp);
+                Angajati a = SqliteConnectAngajati.SearchAngajatByCnp(cnp);
                 FileToFormData(a);
             }
+        }
+
+        private void logOutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+            Login LoginForm = new Login();
+            LoginForm.Show();
         }
     }
 }
